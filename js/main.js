@@ -3,6 +3,11 @@ var PHOTOS_COUNT = 25;
 var MIN_LIKES = 15;
 var MAX_LIKES = 200;
 var MAX_COMMENTS = 5;
+var DESCRIPTIONS = [
+  'Выразительный JavaScript: Document Object Model.',
+  'Выразительный JavaScript: Формы и поля форм',
+  'Выразительный JavaScript: Структуры данных: объекты и массивы'
+];
 var COMMENTS_TEXTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -39,7 +44,7 @@ var photosCreate = function (photosCount) {
   for (var i = 0; i < photosCount; i++) {
     photosArray[i] = {};
     photosArray[i].url = 'photos/' + (i + 1) + '.jpg';
-    photosArray[i].description = 'Выразительный JavaScript: Document Object Model.';
+    photosArray[i].description = DESCRIPTIONS[randomNamber(DESCRIPTIONS.length - 1)];
     photosArray[i].likes = randomNamber(MAX_LIKES - MIN_LIKES) + MIN_LIKES;
     photosArray[i].comments = commentsCreate(randomNamber(MAX_COMMENTS));
   }
