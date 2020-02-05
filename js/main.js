@@ -26,14 +26,19 @@ var randomNamber = function (num) {
   return Math.floor(Math.random() * (num + 1));
 };
 
+//  Функция выбора случачйного элемента массива
+var getRandomArrayElement = function (array) {
+  return array[randomNamber(array.length - 1)];
+};
+
 //  Функция создания массива комментариев
 var commentsCreate = function (commentsCount) {
   var commentsArray = [];
   for (var i = 0; i < commentsCount; i++) {
     commentsArray[i] = {};
     commentsArray[i].avatar = 'img/avatar-' + (randomNamber(5) + 1) + '.svg';
-    commentsArray[i].message = COMMENTS_TEXTS[randomNamber(COMMENTS_TEXTS.length - 1)];
-    commentsArray[i].name = AUTHORS_NAMES[randomNamber(AUTHORS_NAMES.length - 1)];
+    commentsArray[i].message = getRandomArrayElement(COMMENTS_TEXTS);
+    commentsArray[i].name = getRandomArrayElement(AUTHORS_NAMES);
   }
   return commentsArray;
 };
@@ -44,7 +49,7 @@ var photosCreate = function (photosCount) {
   for (var i = 0; i < photosCount; i++) {
     photosArray[i] = {};
     photosArray[i].url = 'photos/' + (i + 1) + '.jpg';
-    photosArray[i].description = DESCRIPTIONS[randomNamber(DESCRIPTIONS.length - 1)];
+    photosArray[i].description = getRandomArrayElement(DESCRIPTIONS);
     photosArray[i].likes = randomNamber(MAX_LIKES - MIN_LIKES) + MIN_LIKES;
     photosArray[i].comments = commentsCreate(randomNamber(MAX_COMMENTS));
   }
