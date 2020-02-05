@@ -18,17 +18,19 @@ var COMMENTS_TEXTS = [
 ];
 var AUTHORS_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 
+var pictures = document.querySelector('.pictures');
+
 //  Шаблон фотографии
 var photoTemplate = document.querySelector('#picture').content;
 
 //  Функция нахождения случайного числа
-var randomNamber = function (num) {
+var randomNumber = function (num) {
   return Math.floor(Math.random() * (num + 1));
 };
 
 //  Функция выбора случачйного элемента массива
 var getRandomArrayElement = function (array) {
-  return array[randomNamber(array.length - 1)];
+  return array[randomNumber(array.length - 1)];
 };
 
 //  Функция создания массива комментариев
@@ -36,7 +38,7 @@ var commentsCreate = function (commentsCount) {
   var commentsArray = [];
   for (var i = 0; i < commentsCount; i++) {
     commentsArray[i] = {};
-    commentsArray[i].avatar = 'img/avatar-' + (randomNamber(5) + 1) + '.svg';
+    commentsArray[i].avatar = 'img/avatar-' + (randomNumber(5) + 1) + '.svg';
     commentsArray[i].message = getRandomArrayElement(COMMENTS_TEXTS);
     commentsArray[i].name = getRandomArrayElement(AUTHORS_NAMES);
   }
@@ -50,8 +52,8 @@ var photosCreate = function (photosCount) {
     photosArray[i] = {};
     photosArray[i].url = 'photos/' + (i + 1) + '.jpg';
     photosArray[i].description = getRandomArrayElement(DESCRIPTIONS);
-    photosArray[i].likes = randomNamber(MAX_LIKES - MIN_LIKES) + MIN_LIKES;
-    photosArray[i].comments = commentsCreate(randomNamber(MAX_COMMENTS));
+    photosArray[i].likes = randomNumber(MAX_LIKES - MIN_LIKES) + MIN_LIKES;
+    photosArray[i].comments = commentsCreate(randomNumber(MAX_COMMENTS));
   }
   return photosArray;
 };
@@ -75,4 +77,4 @@ var renderPhotos = function (photosArray) {
 };
 
 var photos = photosCreate(PHOTOS_COUNT);
-document.querySelector('.pictures').appendChild(renderPhotos(photos));
+pictures.appendChild(renderPhotos(photos));
