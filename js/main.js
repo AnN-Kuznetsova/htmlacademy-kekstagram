@@ -89,7 +89,6 @@ var renderPhotos = function (photosArray) {
 
 var photos = photosCreate(PHOTOS_COUNT);
 pictures.appendChild(renderPhotos(photos));
-window.console.log(photos);
 
 
 /*  Большая фотография  */
@@ -123,6 +122,7 @@ var renderBigPhoto = function (bigPhoto) {
 };
 
 renderBigPhoto(photos[0]);
+
 body.classList.add('modal-open');
 bigPictureSocialCommentCount.classList.add('hidden');
 bigPictureCommentsLoader.classList.add('hidden');
