@@ -26,6 +26,9 @@ var bigPictureDescription = bigPicture.querySelector('.social__caption');
 var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
 var bigPictureSocialComments = bigPicture.querySelector('.social__comments');
 
+var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
+var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
+
 var photoTemplate = document.querySelector('#picture').content;
 var socialCommentTemplate = document.querySelector('#social-comment').content;
 
@@ -118,4 +121,6 @@ var renderBigPhoto = function (bigPhoto) {
 };
 
 renderBigPhoto(photos[0]);
+bigPictureSocialCommentCount.classList.add('hidden');
+bigPictureCommentsLoader.classList.add('hidden');
 bigPicture.classList.remove('hidden');
