@@ -108,15 +108,14 @@ var renderSocialComments = function (commentsArray) {
 };
 
 //  Функция отрисовки большой фотографии
-/* var renderBigPhoto = function (bigPhoto) {
+var renderBigPhoto = function (bigPhoto) {
+  bigPictureImg.src = bigPhoto.url;
+  bigPictureLikesCount.textContent = bigPhoto.likes;
+  bigPictureCommentsCount.textContent = bigPhoto.comments.length;
+  bigPictureDescription.textContent = bigPhoto.description;
+  bigPictureSocialComments.innerHTML = '';
+  bigPictureSocialComments.appendChild(renderSocialComments(bigPhoto.comments));
+};
 
-}; */
-
-bigPictureImg.src = photos[0].url;
-bigPictureLikesCount.textContent = photos[0].likes;
-bigPictureCommentsCount.textContent = photos[0].comments.length;
-bigPictureDescription.textContent = photos[0].description;
-bigPictureSocialComments.innerHTML = '';
-bigPictureSocialComments.appendChild(renderSocialComments(photos[0].comments));
-
+renderBigPhoto(photos[0]);
 bigPicture.classList.remove('hidden');
