@@ -18,6 +18,8 @@ var COMMENTS_TEXTS = [
 ];
 var AUTHORS_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 
+var body = document.querySelector('body');
+
 var pictures = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
@@ -121,6 +123,7 @@ var renderBigPhoto = function (bigPhoto) {
 };
 
 renderBigPhoto(photos[0]);
+body.classList.add('modal-open');
 bigPictureSocialCommentCount.classList.add('hidden');
 bigPictureCommentsLoader.classList.add('hidden');
 bigPicture.classList.remove('hidden');
