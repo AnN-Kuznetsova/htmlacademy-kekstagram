@@ -1,4 +1,6 @@
 'use strict';
+var ESC_KEY = 'Escape';
+
 var PHOTOS_COUNT = 25;
 var MIN_LIKES = 15;
 var MAX_LIKES = 200;
@@ -28,8 +30,8 @@ var bigPictureDescription = bigPicture.querySelector('.social__caption');
 var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
 var bigPictureSocialComments = bigPicture.querySelector('.social__comments');
 
-var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
-var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
+/* var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
+var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader'); */
 
 var photoTemplate = document.querySelector('#picture').content;
 var socialCommentTemplate = document.querySelector('#social-comment').content;
@@ -123,7 +125,58 @@ var renderBigPhoto = function (bigPhoto) {
 
 renderBigPhoto(photos[0]);
 
-body.classList.add('modal-open');
+/* body.classList.add('modal-open');
 bigPictureSocialCommentCount.classList.add('hidden');
 bigPictureCommentsLoader.classList.add('hidden');
-bigPicture.classList.remove('hidden');
+bigPicture.classList.remove('hidden'); */
+
+
+/*  Загрузка изображения  */
+
+var imgUpload = pictures.querySelector('.img-upload'); //  Поле для загрузки нового изображения на сайт
+var uploadFileInput = imgUpload.querySelector('#upload-file');
+var imgUploadOverlay = imgUpload.querySelector('.img-upload__overlay'); //  Форма редактирования изображения
+var uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
+
+//  Функция закрытия попапа по нажатию на ESC
+var onPopupEscPress = function (evt, target, closePopup) {
+  if (evt.key === ESC_KEY) {
+    if (((target.tagName === 'INPUT') && (target.type === 'text')) || (target.tagName === 'TEXTAREA')) {
+      target.blur();
+    } else {
+      closePopup();
+    }
+  }
+};
+
+//  mountedImgUploadOverlay() - всё добавляет
+var mountedImgUploadOverlay = function () {
+  uploadCancel.addEventListener('click', closeImgUploadOverlay);
+  document.addEventListener('keydown', onImgUploadOverlayEscPress);
+};
+
+//  destroyedImgUploadOverlay() - всё удаляет
+var destroyedImgUploadOverlay = function () {
+  document.removeEventListener('keydown', onImgUploadOverlayEscPress);
+};
+
+var closeImgUploadOverlay = function () {
+  body.classList.remove('modal-open');
+  imgUploadOverlay.classList.add('hidden');
+  uploadFileInput.value = '';
+  destroyedImgUploadOverlay();
+};
+
+var onImgUploadOverlayEscPress = function (evt) {
+  onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
+};
+
+var openImgUploadOverlay = function () {
+  body.classList.add('modal-open');
+  imgUploadOverlay.classList.remove('hidden');
+  mountedImgUploadOverlay();
+};
+
+uploadFileInput.addEventListener('change', function () {
+  openImgUploadOverlay();
+});
