@@ -306,22 +306,22 @@ var onSliderPinMouseDown = function (evt) {
     evtXStart = moveEvt.clientX;
 
     if ((effectLevelPin.offsetLeft - shiftX) < 0) {
-      effectLevelPin.style.left = 0;
-      //pinOffsetLeft = 0;
+      //effectLevelPin.style.left = 0;
+      pinOffsetLeft = 0;
       evtXStart = line.x;
     } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
-      effectLevelPin.style.left = line.width + 'px';
-      //pinOffsetLeft = line.width + 'px';
+      //effectLevelPin.style.left = line.width + 'px';
+      pinOffsetLeft = line.width;
       evtXStart = line.x + line.width;
     } else {
-      //pinOffsetLeft = effectLevelPin.offsetLeft - shiftX + 'px';
-      effectLevelPin.style.left = effectLevelPin.offsetLeft - shiftX + 'px';
+      pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
+      //effectLevelPin.style.left = effectLevelPin.offsetLeft - shiftX + 'px';
     }
 
     filterEffect.effectValue = calculateEffectValue(effectLevelLine, effectLevelPin);
     effectLevelValueInput.value = filterEffect.effectValue;
     //effectLevelDepth.style.width = filterEffect.effectValue + '%';
-    renderSlider(/* pinOffsetLeft, */ filterEffect.effectValue);
+    renderSlider(pinOffsetLeft, filterEffect.effectValue);
     renderEffect(filterEffect.effectName, filterEffect.effectValue);
   };
 
@@ -347,9 +347,11 @@ var calculateEffectValue = function (sliderLine, sliderPin) {
   return (line.width * effectValue / 100);
 }; */
 
-var renderSlider = function (/* pinOffset, */ effectValue) {
+var renderSlider = function (pinOffset, effectValue) {
   effectLevelDepth.style.width = effectValue + '%';
-  //effectLevelPin.style.left = pinOffset + 'px';
+  effectLevelPin.style.left = pinOffset + 'px';
+
+  window.console.log(pinOffset);
 };
 
 var renderEffect = function (effectName, effectValue) {
