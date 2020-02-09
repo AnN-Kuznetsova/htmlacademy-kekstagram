@@ -237,25 +237,34 @@ var renderScale = function (scale) {
 /*  Наложение эффекта на изображение  */
 
 var DEFAULT_EFFECT_NAME = 'effects__preview--none';
+var DEFAULT_EFFECT_VALUE = imgUploadOverlay.querySelector('.effect-level__value').value;
 
 var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
 
-var checkedEffectName = '';
+var filterEffect = {
+  setDefaultValues: function () {
+    this.effectName = DEFAULT_EFFECT_NAME;
+    this.effectValue = DEFAULT_EFFECT_VALUE;
+  }
+};
+
+filterEffect.setDefaultValues();
+//checkedEffectName = DEFAULT_EFFECT_NAME;
 
 var getEffectName = function (effectTartget) {
   return ('effects__preview--' + effectTartget.id.slice(7));
 };
 
 var removeEffect = function () {
-  if (checkedEffectName) {
-    imgUploadPreview.classList.remove(checkedEffectName);
+  if (filterEffect.effectName) {
+    imgUploadPreview.classList.remove(filterEffect.effectName);
   }
 };
 
 var addEffect = function (effectName) {
   if (effectName !== 'effects__preview--none') {
     imgUploadPreview.classList.add(effectName);
-    checkedEffectName = effectName;
+    filterEffect.effectName = effectName;
   }
 };
 
@@ -267,6 +276,9 @@ var resetEffect = function () {
       addEffect(getEffectName(effectsRradioButtons[i]));
     }
   }
+  filterEffect.setDefaultValues();
+  effectLevelValueInput.value = DEFAULT_EFFECT_VALUE;
+  renderSlider(filterEffect.effectValue);
 };
 
 var setEffect = function (evt) {
@@ -280,28 +292,37 @@ var setEffect = function (evt) {
 var effectLevelLine = imgUploadOverlay.querySelector('.effect-level__line');
 var effectLevelPin = imgUploadOverlay.querySelector('.effect-level__pin');
 var effectLevelValueInput = imgUploadOverlay.querySelector('.effect-level__value');
+var effectLevelDepth = imgUploadOverlay.querySelector('.effect-level__depth');
 
 var onSliderPinMouseDown = function (evt) {
   var line = effectLevelLine.getBoundingClientRect();
-  var pin = effectLevelPin.getBoundingClientRect();
   var evtXStart = evt.clientX;
-  var initialShift = (pin.x - line.x);
 
   var onSliderPinMouseMove = function (moveEvt) {
     moveEvt.preventDefault();
 
+    var pinOffsetLeft;
     var shiftX = (evtXStart - moveEvt.clientX);
     evtXStart = moveEvt.clientX;
 
     if ((effectLevelPin.offsetLeft - shiftX) < 0) {
       effectLevelPin.style.left = 0;
+      //pinOffsetLeft = 0;
       evtXStart = line.x;
     } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
       effectLevelPin.style.left = line.width + 'px';
+      //pinOffsetLeft = line.width + 'px';
       evtXStart = line.x + line.width;
     } else {
+      //pinOffsetLeft = effectLevelPin.offsetLeft - shiftX + 'px';
       effectLevelPin.style.left = effectLevelPin.offsetLeft - shiftX + 'px';
     }
+
+    filterEffect.effectValue = calculateEffectValue(effectLevelLine, effectLevelPin);
+    effectLevelValueInput.value = filterEffect.effectValue;
+    //effectLevelDepth.style.width = filterEffect.effectValue + '%';
+    renderSlider(/* pinOffsetLeft, */ filterEffect.effectValue);
+    renderEffect(filterEffect.effectName, filterEffect.effectValue);
   };
 
   var onSliderPinMouseUp = function (upEvt) {
@@ -309,25 +330,30 @@ var onSliderPinMouseDown = function (evt) {
 
     document.removeEventListener('mousemove', onSliderPinMouseMove);
     document.removeEventListener('mouseup', onSliderPinMouseUp);
-
-    // window.console.log(effectLevelPin.style.left);
-
-    /* var effectValue = ((pin.x - line.x) * 100 / line.width);
-    effectLevelValueInput.value = effectValue;
-    window.console.log(effectValue); */
   };
 
   document.addEventListener('mousemove', onSliderPinMouseMove);
   document.addEventListener('mouseup', onSliderPinMouseUp);
 };
 
-/* var setEffectValue = function () {
-  var line = effectLevelLine.getBoundingClientRect();
-  var pin = effectLevelPin.getBoundingClientRect();
-  var xPin = (pin.x + pin.width / 2);
+var calculateEffectValue = function (sliderLine, sliderPin) {
+  var line = sliderLine.getBoundingClientRect();
+  var pin = sliderPin.getBoundingClientRect();
+  return ((pin.x - line.x) * 100 / line.width);
+};
 
-  var effectValue = ((pin.x - line.x) * 100 / line.width);
-  effectLevelValueInput.value = effectValue;
-
-  window.console.log(effectValue);
+/* var calculatePinOffset = function (sliderLine, effectValue) {
+  line = sliderLine.getBoundingClientRect();
+  return (line.width * effectValue / 100);
 }; */
+
+var renderSlider = function (/* pinOffset, */ effectValue) {
+  effectLevelDepth.style.width = effectValue + '%';
+  //effectLevelPin.style.left = pinOffset + 'px';
+};
+
+var renderEffect = function (effectName, effectValue) {
+
+
+  window.console.log(effectName + ', ' + effectValue);
+};
