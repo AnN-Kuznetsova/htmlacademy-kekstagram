@@ -235,15 +235,21 @@ var renderScale = function (scale) {
 
 /*  Наложение эффекта на изображение  */
 
+var effectLevel = imgUploadOverlay.querySelector('.effect-level');
+var effectLevelLine = effectLevel.querySelector('.effect-level__line');
+var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
+var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
+var effectLevelDepth = effectLevel.querySelector('.effect-level__depth');
+
 var DEFAULT_EFFECT_NAME = 'effects__preview--none';
-var DEFAULT_EFFECT_VALUE = imgUploadOverlay.querySelector('.effect-level__value').value;
+var DEFAULT_EFFECT_VALUE = effectLevelValueInput.value;
 
 var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
 
 var filterEffect = {
   setDefaultValues: function () {
-    this.effectName = DEFAULT_EFFECT_NAME;
-    this.effectValue = DEFAULT_EFFECT_VALUE;
+    this.name = DEFAULT_EFFECT_NAME;
+    this.value = DEFAULT_EFFECT_VALUE;
   }
 };
 
@@ -254,15 +260,15 @@ var getEffectName = function (effectTartget) {
 };
 
 var removeEffect = function () {
-  if (filterEffect.effectName) {
-    imgUploadPreview.classList.remove(filterEffect.effectName);
+  if (filterEffect.name) {
+    imgUploadPreview.classList.remove(filterEffect.name);
   }
 };
 
 var addEffect = function (effectName) {
   if (effectName !== 'effects__preview--none') {
     imgUploadPreview.classList.add(effectName);
-    filterEffect.effectName = effectName;
+    filterEffect.name = effectName;
   }
 };
 
@@ -274,23 +280,17 @@ var resetEffect = function () {
       addEffect(getEffectName(effectsRradioButtons[i]));
     }
   }
-  filterEffect.setDefaultValues();
-  effectLevelValueInput.value = DEFAULT_EFFECT_VALUE;
-  renderSlider(calculatePinOffset(effectLevelLine, filterEffect.effectValue), filterEffect.effectValue);
+  initSlider(DEFAULT_EFFECT_NAME);
 };
 
 var setEffect = function (evt) {
   removeEffect();
   addEffect(getEffectName(evt.target));
+  initSlider(getEffectName(evt.target));
 };
 
 
 /*  Слайдер  */
-
-var effectLevelLine = imgUploadOverlay.querySelector('.effect-level__line');
-var effectLevelPin = imgUploadOverlay.querySelector('.effect-level__pin');
-var effectLevelValueInput = imgUploadOverlay.querySelector('.effect-level__value');
-var effectLevelDepth = imgUploadOverlay.querySelector('.effect-level__depth');
 
 var onSliderPinMouseDown = function (evt) {
   var line = effectLevelLine.getBoundingClientRect();
@@ -313,10 +313,10 @@ var onSliderPinMouseDown = function (evt) {
       pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
     }
 
-    filterEffect.effectValue = calculateEffectValue(effectLevelLine, effectLevelPin);
-    effectLevelValueInput.value = filterEffect.effectValue;
-    renderSlider(pinOffsetLeft, filterEffect.effectValue);
-    renderEffect(filterEffect.effectName, filterEffect.effectValue);
+    filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
+    effectLevelValueInput.value = filterEffect.value;
+    renderSlider(pinOffsetLeft, filterEffect.value);
+    renderEffect(filterEffect.name, filterEffect.value);
   };
 
   var onSliderPinMouseUp = function (upEvt) {
@@ -344,12 +344,22 @@ var calculatePinOffset = function (sliderLine, effectValue) {
 var renderSlider = function (pinOffset, effectValue) {
   effectLevelDepth.style.width = effectValue + '%';
   effectLevelPin.style.left = pinOffset + 'px';
-
-  window.console.log(pinOffset);
 };
 
 var renderEffect = function (effectName, effectValue) {
 
 
   window.console.log(effectName + ', ' + effectValue);
+};
+
+var initSlider = function (effectName) {
+  filterEffect.setDefaultValues();
+  filterEffect.name = effectName;
+  effectLevelValueInput.value = DEFAULT_EFFECT_VALUE;
+  if (filterEffect.name === 'effects__preview--none') {
+    effectLevel.classList.add('hidden');
+  } else {
+    effectLevel.classList.remove('hidden');
+    renderSlider(calculatePinOffset(effectLevelLine, filterEffect.value), filterEffect.value);
+  }
 };
