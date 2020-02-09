@@ -153,6 +153,9 @@ var onPopupEscPress = function (evt, target, closePopup) {
 var mountedImgUploadOverlay = function () {
   uploadCancel.addEventListener('click', closeImgUploadOverlay);
   document.addEventListener('keydown', onImgUploadOverlayEscPress);
+
+  scaleControlSmaller.addEventListener('click', setScaleValue);
+  scaleControlBigger.addEventListener('click', setScaleValue);
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -160,10 +163,16 @@ var destroyedImgUploadOverlay = function () {
   document.removeEventListener('keydown', onImgUploadOverlayEscPress);
 };
 
+//  Сброс параметров окна редактирования изображени в начальные установки
+var resetImgUploadOverlay = function () {
+  uploadFileInput.value = '';
+  renderScale(DEFAULT_SCALE);
+};
+
 var closeImgUploadOverlay = function () {
   body.classList.remove('modal-open');
   imgUploadOverlay.classList.add('hidden');
-  uploadFileInput.value = '';
+  resetImgUploadOverlay();
   destroyedImgUploadOverlay();
 };
 
@@ -180,3 +189,36 @@ var openImgUploadOverlay = function () {
 uploadFileInput.addEventListener('change', function () {
   openImgUploadOverlay();
 });
+
+
+/*  Изменение размера изображения  */
+
+var MIN_SCALE = 25;
+var MAX_SCALE = 100;
+var SCALE_STEP = 25;
+var DEFAULT_SCALE = 100;
+
+var scaleControlSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
+var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
+var scaleControlValue = imgUploadOverlay.querySelector('.scale__control--value');
+var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
+
+//  Функция изменения масштаба
+var setScaleValue = function (evt) {
+  var scaleValue = parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
+  if ((evt.target === scaleControlSmaller) && (scaleValue > MIN_SCALE)) {
+    scaleValue -= SCALE_STEP;
+  } else if ((evt.target === scaleControlBigger) && (scaleValue < MAX_SCALE)) {
+    scaleValue += SCALE_STEP;
+  }
+
+  renderScale(scaleValue);
+  // return scaleValue;
+};
+
+var renderScale = function (scale) {
+  scaleControlValue.value = scale + '%';
+  scale = (scale / 100);
+  imgUploadPreview.style.transform = 'scale(' + scale + ')';
+};
+
