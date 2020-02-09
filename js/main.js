@@ -200,7 +200,6 @@ uploadFileInput.addEventListener('change', function () {
   openImgUploadOverlay();
 });
 
-//openImgUploadOverlay();
 
 /*  Изменение размера изображения  */
 
@@ -249,7 +248,6 @@ var filterEffect = {
 };
 
 filterEffect.setDefaultValues();
-//checkedEffectName = DEFAULT_EFFECT_NAME;
 
 var getEffectName = function (effectTartget) {
   return ('effects__preview--' + effectTartget.id.slice(7));
@@ -278,7 +276,7 @@ var resetEffect = function () {
   }
   filterEffect.setDefaultValues();
   effectLevelValueInput.value = DEFAULT_EFFECT_VALUE;
-  renderSlider(filterEffect.effectValue);
+  renderSlider(calculatePinOffset(effectLevelLine, filterEffect.effectValue), filterEffect.effectValue);
 };
 
 var setEffect = function (evt) {
@@ -306,21 +304,17 @@ var onSliderPinMouseDown = function (evt) {
     evtXStart = moveEvt.clientX;
 
     if ((effectLevelPin.offsetLeft - shiftX) < 0) {
-      //effectLevelPin.style.left = 0;
       pinOffsetLeft = 0;
       evtXStart = line.x;
     } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
-      //effectLevelPin.style.left = line.width + 'px';
       pinOffsetLeft = line.width;
       evtXStart = line.x + line.width;
     } else {
       pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
-      //effectLevelPin.style.left = effectLevelPin.offsetLeft - shiftX + 'px';
     }
 
     filterEffect.effectValue = calculateEffectValue(effectLevelLine, effectLevelPin);
     effectLevelValueInput.value = filterEffect.effectValue;
-    //effectLevelDepth.style.width = filterEffect.effectValue + '%';
     renderSlider(pinOffsetLeft, filterEffect.effectValue);
     renderEffect(filterEffect.effectName, filterEffect.effectValue);
   };
@@ -342,10 +336,10 @@ var calculateEffectValue = function (sliderLine, sliderPin) {
   return ((pin.x - line.x) * 100 / line.width);
 };
 
-/* var calculatePinOffset = function (sliderLine, effectValue) {
-  line = sliderLine.getBoundingClientRect();
+var calculatePinOffset = function (sliderLine, effectValue) {
+  var line = sliderLine.getBoundingClientRect();
   return (line.width * effectValue / 100);
-}; */
+};
 
 var renderSlider = function (pinOffset, effectValue) {
   effectLevelDepth.style.width = effectValue + '%';
