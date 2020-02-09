@@ -162,6 +162,8 @@ var mountedImgUploadOverlay = function () {
       setEffect(evt);
     });
   }
+
+  effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -179,7 +181,7 @@ var resetImgUploadOverlay = function () {
 var closeImgUploadOverlay = function () {
   body.classList.remove('modal-open');
   imgUploadOverlay.classList.add('hidden');
-  //resetImgUploadOverlay();
+  // resetImgUploadOverlay();
   destroyedImgUploadOverlay();
 };
 
@@ -198,6 +200,7 @@ uploadFileInput.addEventListener('change', function () {
   openImgUploadOverlay();
 });
 
+//openImgUploadOverlay();
 
 /*  Изменение размера изображения  */
 
@@ -271,3 +274,60 @@ var setEffect = function (evt) {
   addEffect(getEffectName(evt.target));
 };
 
+
+/*  Слайдер  */
+
+var effectLevelLine = imgUploadOverlay.querySelector('.effect-level__line');
+var effectLevelPin = imgUploadOverlay.querySelector('.effect-level__pin');
+var effectLevelValueInput = imgUploadOverlay.querySelector('.effect-level__value');
+
+var onSliderPinMouseDown = function (evt) {
+  var line = effectLevelLine.getBoundingClientRect();
+  var pin = effectLevelPin.getBoundingClientRect();
+  var evtXStart = evt.clientX;
+  var initialShift = (pin.x - line.x);
+
+  var onSliderPinMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shiftX = (evtXStart - moveEvt.clientX);
+    evtXStart = moveEvt.clientX;
+
+    if ((effectLevelPin.offsetLeft - shiftX) < 0) {
+      effectLevelPin.style.left = 0;
+      evtXStart = line.x;
+    } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
+      effectLevelPin.style.left = line.width + 'px';
+      evtXStart = line.x + line.width;
+    } else {
+      effectLevelPin.style.left = effectLevelPin.offsetLeft - shiftX + 'px';
+    }
+  };
+
+  var onSliderPinMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onSliderPinMouseMove);
+    document.removeEventListener('mouseup', onSliderPinMouseUp);
+
+    // window.console.log(effectLevelPin.style.left);
+
+    /* var effectValue = ((pin.x - line.x) * 100 / line.width);
+    effectLevelValueInput.value = effectValue;
+    window.console.log(effectValue); */
+  };
+
+  document.addEventListener('mousemove', onSliderPinMouseMove);
+  document.addEventListener('mouseup', onSliderPinMouseUp);
+};
+
+/* var setEffectValue = function () {
+  var line = effectLevelLine.getBoundingClientRect();
+  var pin = effectLevelPin.getBoundingClientRect();
+  var xPin = (pin.x + pin.width / 2);
+
+  var effectValue = ((pin.x - line.x) * 100 / line.width);
+  effectLevelValueInput.value = effectValue;
+
+  window.console.log(effectValue);
+}; */
