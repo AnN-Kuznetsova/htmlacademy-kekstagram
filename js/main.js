@@ -242,7 +242,7 @@ var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
 var effectLevelDepth = effectLevel.querySelector('.effect-level__depth');
 
 var DEFAULT_EFFECT_NAME = 'effects__preview--none';
-var DEFAULT_EFFECT_VALUE = effectLevelValueInput.value;
+var DEFAULT_EFFECT_VALUE = 100; // effectLevelValueInput.value;
 
 var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
 
@@ -270,6 +270,7 @@ var addEffect = function (effectName) {
     imgUploadPreview.classList.add(effectName);
     filterEffect.name = effectName;
   }
+  renderEffect(effectName, filterEffect.value);
 };
 
 var resetEffect = function () {
@@ -347,9 +348,29 @@ var renderSlider = function (pinOffset, effectValue) {
 };
 
 var renderEffect = function (effectName, effectValue) {
-
-
-  window.console.log(effectName + ', ' + effectValue);
+  var filterValue;
+  imgUploadPreview.style.filter = '';
+  switch (effectName) {
+    case 'effects__preview--chrome':
+      filterValue = (effectValue / 100);
+      imgUploadPreview.style.filter = 'grayscale(' + filterValue + ')';
+      break;
+    case 'effects__preview--sepia':
+      filterValue = (effectValue / 100);
+      imgUploadPreview.style.filter = 'sepia(' + filterValue + ')';
+      break;
+    case 'effects__preview--marvin':
+      filterValue = effectValue + '%';
+      imgUploadPreview.style.filter = 'invert(' + filterValue + ')';
+      break;
+    case 'effects__preview--phobos':
+      filterValue = (effectValue * 3 / 100) + 'px';
+      imgUploadPreview.style.filter = 'blur(' + filterValue + ')';
+      break;
+    case 'effects__preview--heat':
+      filterValue = effectValue * 2 / 100 + 1;
+      imgUploadPreview.style.filter = 'brightness(' + filterValue + ')';
+  }
 };
 
 var initSlider = function (effectName) {
