@@ -156,6 +156,12 @@ var mountedImgUploadOverlay = function () {
 
   scaleControlSmaller.addEventListener('click', setScaleValue);
   scaleControlBigger.addEventListener('click', setScaleValue);
+
+  for (var i = 0; i < effectsRradioButtons.length; i++) {
+    effectsRradioButtons[i].addEventListener('change', function (evt) {
+      setEffect(evt);
+    });
+  }
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -167,12 +173,13 @@ var destroyedImgUploadOverlay = function () {
 var resetImgUploadOverlay = function () {
   uploadFileInput.value = '';
   renderScale(DEFAULT_SCALE);
+  resetEffect();
 };
 
 var closeImgUploadOverlay = function () {
   body.classList.remove('modal-open');
   imgUploadOverlay.classList.add('hidden');
-  resetImgUploadOverlay();
+  //resetImgUploadOverlay();
   destroyedImgUploadOverlay();
 };
 
@@ -184,6 +191,7 @@ var openImgUploadOverlay = function () {
   body.classList.add('modal-open');
   imgUploadOverlay.classList.remove('hidden');
   mountedImgUploadOverlay();
+  resetImgUploadOverlay();
 };
 
 uploadFileInput.addEventListener('change', function () {
@@ -220,5 +228,46 @@ var renderScale = function (scale) {
   scaleControlValue.value = scale + '%';
   scale = (scale / 100);
   imgUploadPreview.style.transform = 'scale(' + scale + ')';
+};
+
+
+/*  Наложение эффекта на изображение  */
+
+var DEFAULT_EFFECT_NAME = 'effects__preview--none';
+
+var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
+
+var checkedEffectName = '';
+
+var getEffectName = function (effectTartget) {
+  return ('effects__preview--' + effectTartget.id.slice(7));
+};
+
+var removeEffect = function () {
+  if (checkedEffectName) {
+    imgUploadPreview.classList.remove(checkedEffectName);
+  }
+};
+
+var addEffect = function (effectName) {
+  if (effectName !== 'effects__preview--none') {
+    imgUploadPreview.classList.add(effectName);
+    checkedEffectName = effectName;
+  }
+};
+
+var resetEffect = function () {
+  removeEffect();
+  for (var i = 0; i < effectsRradioButtons.length; i++) {
+    if (getEffectName(effectsRradioButtons[i]) === DEFAULT_EFFECT_NAME) {
+      effectsRradioButtons[i].checked = true;
+      addEffect(getEffectName(effectsRradioButtons[i]));
+    }
+  }
+};
+
+var setEffect = function (evt) {
+  removeEffect();
+  addEffect(getEffectName(evt.target));
 };
 
