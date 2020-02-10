@@ -240,11 +240,11 @@ var effectLevelLine = effectLevel.querySelector('.effect-level__line');
 var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
 var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
 var effectLevelDepth = effectLevel.querySelector('.effect-level__depth');
+var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
 
 var DEFAULT_EFFECT_NAME = 'effect-none'; // 'effects__preview--none';
 var DEFAULT_EFFECT_VALUE = 100; // effectLevelValueInput.value;
-
-var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
+var NONE_EFFECT_NAME = 'effect-none';
 
 var filters = {
   'effect-none': {
@@ -286,18 +286,13 @@ var filters = {
   }
 };
 
-var filterEffect = {
-  /* getClass: function () {
-    return ('effects__preview--' + this.name.slice(7));
-  }, */
-  setDefaultValues: function () {
-    this.name = DEFAULT_EFFECT_NAME;
-    this.value = DEFAULT_EFFECT_VALUE;
-    this.class = filters[this.name].className; // this.getClass();
-  }
-};
-
-filterEffect.setDefaultValues();
+var filterEffect = (function () {
+  var effectObject = {};
+  effectObject.name = DEFAULT_EFFECT_NAME;
+  effectObject.value = DEFAULT_EFFECT_VALUE;
+  effectObject.class = filters[effectObject.name].className;
+  return effectObject;
+})();
 
 var removeEffect = function () {
   if (filterEffect.class) {
@@ -310,8 +305,6 @@ var addEffect = function (effectName) {
   filterEffect.class = filters[effectName].className;
   filterEffect.value = DEFAULT_EFFECT_VALUE;
   imgUploadPreview.classList.add(filterEffect.class);
-  renderEffect(filterEffect.name, filterEffect.value);
-  window.console.log(filterEffect);
 };
 
 var resetEffect = function () {
@@ -322,13 +315,13 @@ var resetEffect = function () {
       addEffect(effectsRradioButtons[i].id);
     }
   }
-  initSlider(DEFAULT_EFFECT_NAME);
+  initSlider();
 };
 
 var setEffect = function (evt) {
   removeEffect();
   addEffect(evt.target.id);
-  initSlider(evt.target.id);
+  initSlider();
 };
 
 
@@ -389,20 +382,15 @@ var renderSlider = function (pinOffset, effectValue) {
 };
 
 var renderEffect = function (effectName, effectValue) {
-  //imgUploadPreview.style.filter = '';
   imgUploadPreview.style.filter = filters[effectName].lawСreation(effectValue);
 };
 
-var initSlider = function (effectName) {
-  filterEffect.name = effectName;
-  filterEffect.value = DEFAULT_EFFECT_VALUE;
-  effectLevelValueInput.value = filterEffect.value;
-  if (filterEffect.name === 'effect-none') {
-    filterEffect.setDefaultValues();
+var initSlider = function () {
+  if (filterEffect.name === NONE_EFFECT_NAME) {
     effectLevel.classList.add('hidden');
   } else {
     effectLevel.classList.remove('hidden');
     renderSlider(calculatePinOffset(effectLevelLine, filterEffect.value), filterEffect.value);
-    renderEffect(filterEffect.name, filterEffect.value);
   }
+  renderEffect(filterEffect.name, filterEffect.value);
 };
