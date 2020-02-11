@@ -164,10 +164,10 @@ var mountedImgUploadOverlay = function () {
   }
 
   effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
+  effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
   textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
-
-  effectLevelLine.addEventListener('click', onEffectLevelLineClick);
+  uploadFileInput.addEventListener('change', uploadFileTypeValidation);
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -426,7 +426,7 @@ var hashtagsSpecification = {
 };
 
 var onFormSubmit = function (evt) {
-  if (!textHashtagsInputValidation()) {
+  if ((!uploadFileTypeValidation()) || (!textHashtagsInputValidation())) {
     evt.preventDefault();
   }
 };
@@ -492,4 +492,19 @@ var isDescription = function (element) {
 
 var isArrayElementDuplicate = function (element, index, array) {
   return !(array.includes(element, (index + 1)));
+};
+
+//  Валидация типа файла
+var uploadFileTypeValidation = function () {
+  var isValidity = true;
+  var regex = RegExp('/(.png$){1}|(.jpg$){1}|(.jpeg$){1}/');
+
+  if (!regex.test(uploadFileInput.value.toLowerCase())) {
+    isValidity = false;
+    uploadFileInput.setCustomValidity('Выберите правильный формат файла: .png, .jpg, .jpeg');
+  } else {
+    uploadFileInput.setCustomValidity('');
+  }
+
+  return isValidity;
 };
