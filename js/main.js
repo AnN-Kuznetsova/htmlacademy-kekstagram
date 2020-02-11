@@ -372,7 +372,7 @@ var onSliderPinMouseDown = function (evt) {
 var calculateEffectValue = function (sliderLine, sliderPin) {
   var line = sliderLine.getBoundingClientRect();
   var pin = sliderPin.getBoundingClientRect();
-  return ((pin.x - line.x) * 100 / line.width);
+  return ((pin.x + (pin.width / 2) - line.x) * 100 / line.width);
 };
 
 var calculatePinOffset = function (sliderLine, effectValue) {
