@@ -308,6 +308,7 @@ var addEffect = function (effectName) {
   filterEffect.name = effectName;
   filterEffect.class = filters[effectName].className;
   filterEffect.value = DEFAULT_EFFECT_VALUE;
+  effectLevelValueInput.value = filterEffect.value;
   imgUploadPreview.classList.add(filterEffect.class);
 };
 
@@ -353,13 +354,14 @@ var onSliderPinMouseDown = function (evt) {
     }
 
     filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
-    effectLevelValueInput.value = filterEffect.value;
     renderSlider(pinOffsetLeft, filterEffect.value);
     renderEffect(filterEffect.name, filterEffect.value);
   };
 
   var onSliderPinMouseUp = function (upEvt) {
     upEvt.preventDefault();
+
+    effectLevelValueInput.value = filterEffect.value;
 
     document.removeEventListener('mousemove', onSliderPinMouseMove);
     document.removeEventListener('mouseup', onSliderPinMouseUp);
@@ -372,7 +374,7 @@ var onSliderPinMouseDown = function (evt) {
 var calculateEffectValue = function (sliderLine, sliderPin) {
   var line = sliderLine.getBoundingClientRect();
   var pin = sliderPin.getBoundingClientRect();
-  return ((pin.x + (pin.width / 2) - line.x) * 100 / line.width);
+  return Math.round((pin.x + (pin.width / 2) - line.x) * 100 / line.width);
 };
 
 var calculatePinOffset = function (sliderLine, effectValue) {
