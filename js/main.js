@@ -166,6 +166,8 @@ var mountedImgUploadOverlay = function () {
   effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
   imgUploadForm.addEventListener('submit', onFormSubmit);
   textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
+
+  effectLevelLine.addEventListener('click', onEffectLevelLineClick);
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -368,6 +370,15 @@ var onSliderPinMouseDown = function (evt) {
 
   document.addEventListener('mousemove', onSliderPinMouseMove);
   document.addEventListener('mouseup', onSliderPinMouseUp);
+};
+
+var onEffectLevelLineClick = function (evt) {
+  var pinOffsetLeft = evt.clientX - effectLevelLine.getBoundingClientRect().x;
+  renderSlider(pinOffsetLeft, filterEffect.value);
+  filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
+  effectLevelValueInput.value = filterEffect.value;
+  renderEffect(filterEffect.name, filterEffect.value);
+  renderSlider(pinOffsetLeft, filterEffect.value);
 };
 
 var calculateEffectValue = function (sliderLine, sliderPin) {
