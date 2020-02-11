@@ -175,7 +175,7 @@ var destroyedImgUploadOverlay = function () {
 
 //  Сброс параметров окна редактирования изображени в начальные установки
 var resetImgUploadOverlay = function () {
-  // uploadFileInput.value = '';
+  uploadFileInput.value = '';
   renderScale(DEFAULT_SCALE);
   resetEffect();
   textHashtagsInput.value = '';
@@ -184,8 +184,7 @@ var resetImgUploadOverlay = function () {
 var closeImgUploadOverlay = function () {
   body.classList.remove('modal-open');
   imgUploadOverlay.classList.add('hidden');
-  // resetImgUploadOverlay();
-  uploadFileInput.value = '';
+  resetImgUploadOverlay();
   destroyedImgUploadOverlay();
 };
 
@@ -197,7 +196,7 @@ var openImgUploadOverlay = function () {
   body.classList.add('modal-open');
   imgUploadOverlay.classList.remove('hidden');
   mountedImgUploadOverlay();
-  resetImgUploadOverlay();
+  resetEffect();
 };
 
 uploadFileInput.addEventListener('change', function () {
@@ -434,7 +433,6 @@ var textHashtagsInputValidation = function () {
         hashtags.splice(i, 1);
       }
     }
-    window.console.log(hashtags);
 
     if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
       invalidities.push('Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.');
