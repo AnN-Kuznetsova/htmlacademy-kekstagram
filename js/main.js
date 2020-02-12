@@ -452,10 +452,14 @@ var textHashtagsInputValidation = function () {
       if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
         invalidities.push('Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.');
       }
-      if (!hashtags.every(isMoreMinLength)) {
+      if (!hashtags.every(function (element) {
+        return isMoreMinLength(element, hashtagsSpecification.minLength);
+      })) {
         invalidities.push('Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.');
       }
-      if (!hashtags.every(isLessMaxLength)) {
+      if (!hashtags.every(function (element) {
+        return isLessMaxLength(element, hashtagsSpecification.maxLength);
+      })) {
         invalidities.push('Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.');
       }
       if (!hashtags.every(function (element) {
@@ -500,12 +504,12 @@ var isArrayLength = function (array, maxLength) {
   return (array.length > maxLength) ? false : true;
 };
 
-var isMoreMinLength = function (element) {
-  return (element.length >= hashtagsSpecification.minLength);
+var isMoreMinLength = function (str, minLength) {
+  return (str.length >= minLength);
 };
 
-var isLessMaxLength = function (element) {
-  return (element.length <= hashtagsSpecification.maxLength);
+var isLessMaxLength = function (str, maxLength) {
+  return (str.length <= maxLength);
 };
 
 var isPattern = function (str, pattern) {
