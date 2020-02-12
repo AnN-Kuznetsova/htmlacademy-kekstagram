@@ -507,7 +507,7 @@ var textHashtagsInputValidation = function () {
 /*  Валидация типа загружаемого файла  */
 var uploadFileTypeValidation = function () {
   var isValidity = true;
-  var pattern = RegExp('/(.png$){1}|(.jpg$){1}|(.jpeg$){1}/');
+  var pattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
 
   if (!isPattern(uploadFileInput.value.toLowerCase(), pattern)) {
     isValidity = false;
