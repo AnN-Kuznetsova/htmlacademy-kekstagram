@@ -435,7 +435,6 @@ var onFormSubmit = function (evt) {
 
 var textHashtagsInputValidation = function () {
   var isValidity = true;
-  var invalidities = [];
   var validityMessage = '';
   var hashtags = [];
   var validitiesErrors = {
@@ -470,41 +469,37 @@ var textHashtagsInputValidation = function () {
         }
       }
     }
+
     if (hashtags.length) {
       if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
         validitiesErrors.isHashtagsCount.isValid = false;
-        invalidities.push(validitiesErrors.isHashtagsCount.message);
       }
 
       hashtags.forEach(function (element) {
         if (!isMoreMinLength(element, hashtagsSpecification.minLength) && validitiesErrors.isMinLength.isValid) {
           validitiesErrors.isMinLength.isValid = false;
-          invalidities.push(validitiesErrors.isMinLength.message);
         }
         if (!isLessMaxLength(element, hashtagsSpecification.maxLength) && validitiesErrors.isMaxLength.isValid) {
           validitiesErrors.isMaxLength.isValid = false;
-          invalidities.push(validitiesErrors.isMaxLength.message);
         }
         if (!isPattern(element, hashtagsSpecification.description) && validitiesErrors.isPatternValid.isValid) {
           validitiesErrors.isPatternValid.isValid = false;
-          invalidities.push(validitiesErrors.isPatternValid.message);
         }
       });
 
       if (!hashtags.every(isArrayElementDuplicate)) {
         validitiesErrors.isElementDuplicate.isValid = false;
-        invalidities.push(validitiesErrors.isElementDuplicate.message);
       }
     }
   }
 
-  if (invalidities.length) {
-    isValidity = false;
-    validityMessage = invalidities.join(' \r\n ');
-    textHashtagsInput.setCustomValidity(validityMessage);
-  } else {
-    textHashtagsInput.setCustomValidity('');
+  for (var error in validitiesErrors) {
+    if (!validitiesErrors[error].isValid) {
+      isValidity = false;
+      validityMessage += validitiesErrors[error].message + ' \r\n ';
+    }
   }
+  textHashtagsInput.setCustomValidity(validityMessage);
 
   return isValidity;
 };
