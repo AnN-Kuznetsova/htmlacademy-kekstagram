@@ -181,6 +181,7 @@ var resetImgUploadOverlay = function () {
   renderScale(DEFAULT_SCALE);
   resetEffect();
   textHashtagsInput.value = '';
+  textHashtagsInputValidation();
 };
 
 var closeImgUploadOverlay = function () {
@@ -413,7 +414,6 @@ var initSlider = function () {
 
 
 /*  Валидация хеш-тегов  */
-
 var imgUploadForm = pictures.querySelector('.img-upload__form');
 var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
 
@@ -426,52 +426,75 @@ var hashtagsSpecification = {
 };
 
 var onFormSubmit = function (evt) {
-  if ((!uploadFileTypeValidation()) || (!textHashtagsInputValidation())) {
-    evt.preventDefault();
+  evt.preventDefault();
+  if (uploadFileTypeValidation() && textHashtagsInputValidation()) {
+    evt.target.submit();
+    closeImgUploadOverlay();
   }
 };
 
 var textHashtagsInputValidation = function () {
   var isValidity = true;
+  var invalidities = [];
+  var validityMessage = '';
+  var hashtags = [];
 
   if (textHashtagsInput.value) {
-    var invalidities = [];
-    var validityMessage = '';
-    var hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
-
-    for (var i = (hashtags.length - 1); i >= 0; i--) {
-      if (!hashtags[i]) {
-        hashtags.splice(i, 1);
+    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
+    if (hashtags.length) {
+      for (var i = (hashtags.length - 1); i >= 0; i--) {
+        if (!hashtags[i]) {
+          hashtags.splice(i, 1);
+        }
       }
     }
+    if (hashtags.length) {
+      if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
+        invalidities.push('Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.');
+      }
+      if (!hashtags.every(isMoreMinLength)) {
+        invalidities.push('Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.');
+      }
+      if (!hashtags.every(isLessMaxLength)) {
+        invalidities.push('Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.');
+      }
+      if (!hashtags.every(function (element) {
+        return isPattern(element, hashtagsSpecification.description);
+      })) {
+        invalidities.push('Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.');
+      }
+      if (!hashtags.every(isArrayElementDuplicate)) {
+        invalidities.push('Хэш-теги не могут дублироваться (регистр ввода не учитывается).');
+      }
+    }
+  }
 
-    if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
-      invalidities.push('Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.');
-    }
-    if (!hashtags.every(isMoreMinLength)) {
-      invalidities.push('Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.');
-    }
-    if (!hashtags.every(isLessMaxLength)) {
-      invalidities.push('Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.');
-    }
-    if (!hashtags.every(isDescription)) {
-      invalidities.push('Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.');
-    }
-    if (!hashtags.every(isArrayElementDuplicate)) {
-      invalidities.push('Хэш-теги не могут дублироваться (регистр ввода не учитывается).');
-    }
-
-    if (invalidities.length > 0) {
-      isValidity = false;
-      validityMessage = invalidities.join(' \r\n ');
-      textHashtagsInput.setCustomValidity(validityMessage);
-    } else {
-      textHashtagsInput.setCustomValidity('');
-    }
+  if (invalidities.length) {
+    isValidity = false;
+    validityMessage = invalidities.join(' \r\n ');
+    textHashtagsInput.setCustomValidity(validityMessage);
+  } else {
+    textHashtagsInput.setCustomValidity('');
   }
 
   return isValidity;
 };
+
+/*  Валидация типа загружаемого файла  */
+var uploadFileTypeValidation = function () {
+  var isValidity = true;
+  var pattern = RegExp('/(.png$){1}|(.jpg$){1}|(.jpeg$){1}/');
+
+  if (!isPattern(uploadFileInput.value.toLowerCase(), pattern)) {
+    isValidity = false;
+    uploadFileInput.setCustomValidity('Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg');
+  } else {
+    uploadFileInput.setCustomValidity('');
+  }
+
+  return isValidity;
+};
+
 
 var isArrayLength = function (array, maxLength) {
   return (array.length > maxLength) ? false : true;
@@ -485,26 +508,10 @@ var isLessMaxLength = function (element) {
   return (element.length <= hashtagsSpecification.maxLength);
 };
 
-var isDescription = function (element) {
-  var regex = RegExp(hashtagsSpecification.description);
-  return regex.test(element);
+var isPattern = function (str, pattern) {
+  return RegExp(pattern).test(str);
 };
 
 var isArrayElementDuplicate = function (element, index, array) {
   return !(array.includes(element, (index + 1)));
-};
-
-//  Валидация типа файла
-var uploadFileTypeValidation = function () {
-  var isValidity = true;
-  var regex = RegExp('/(.png$){1}|(.jpg$){1}|(.jpeg$){1}/');
-
-  if (!regex.test(uploadFileInput.value.toLowerCase())) {
-    isValidity = false;
-    uploadFileInput.setCustomValidity('Выберите правильный формат файла: .png, .jpg, .jpeg');
-  } else {
-    uploadFileInput.setCustomValidity('');
-  }
-
-  return isValidity;
 };
