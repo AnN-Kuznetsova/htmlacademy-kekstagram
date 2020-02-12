@@ -438,6 +438,28 @@ var textHashtagsInputValidation = function () {
   var invalidities = [];
   var validityMessage = '';
   var hashtags = [];
+  var validitiesErrors = {
+    isHashtagsCount: {
+      isValid: true,
+      message: 'Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.'
+    },
+    isMinLength: {
+      isValid: true,
+      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.'
+    },
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.'
+    },
+    isPatternValid: {
+      isValid: true,
+      message: 'Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.'
+    },
+    isElementDuplicate: {
+      isValid: true,
+      message: 'Хэш-теги не могут дублироваться (регистр ввода не учитывается).'
+    }
+  };
 
   if (textHashtagsInput.value) {
     hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
@@ -450,25 +472,28 @@ var textHashtagsInputValidation = function () {
     }
     if (hashtags.length) {
       if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
-        invalidities.push('Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.');
+        validitiesErrors.isHashtagsCount.isValid = false;
+        invalidities.push(validitiesErrors.isHashtagsCount.message);
       }
-      if (!hashtags.every(function (element) {
-        return isMoreMinLength(element, hashtagsSpecification.minLength);
-      })) {
-        invalidities.push('Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.');
-      }
-      if (!hashtags.every(function (element) {
-        return isLessMaxLength(element, hashtagsSpecification.maxLength);
-      })) {
-        invalidities.push('Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.');
-      }
-      if (!hashtags.every(function (element) {
-        return isPattern(element, hashtagsSpecification.description);
-      })) {
-        invalidities.push('Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.');
-      }
+
+      hashtags.forEach(function (element) {
+        if (!isMoreMinLength(element, hashtagsSpecification.minLength) && validitiesErrors.isMinLength.isValid) {
+          validitiesErrors.isMinLength.isValid = false;
+          invalidities.push(validitiesErrors.isMinLength.message);
+        }
+        if (!isLessMaxLength(element, hashtagsSpecification.maxLength) && validitiesErrors.isMaxLength.isValid) {
+          validitiesErrors.isMaxLength.isValid = false;
+          invalidities.push(validitiesErrors.isMaxLength.message);
+        }
+        if (!isPattern(element, hashtagsSpecification.description) && validitiesErrors.isPatternValid.isValid) {
+          validitiesErrors.isPatternValid.isValid = false;
+          invalidities.push(validitiesErrors.isPatternValid.message);
+        }
+      });
+
       if (!hashtags.every(isArrayElementDuplicate)) {
-        invalidities.push('Хэш-теги не могут дублироваться (регистр ввода не учитывается).');
+        validitiesErrors.isElementDuplicate.isValid = false;
+        invalidities.push(validitiesErrors.isElementDuplicate.message);
       }
     }
   }
