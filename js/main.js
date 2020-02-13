@@ -22,6 +22,9 @@ var COMMENTS_TEXTS = [
 var AUTHORS_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 
 var body = document.querySelector('body');
+var footer = document.querySelector('footer');
+
+var imgFilters = document.querySelector('.img-filters');
 
 var pictures = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
@@ -72,6 +75,20 @@ var photosCreate = function (photosCount) {
   }
   return photosArray;
 };
+
+//  Функция изменения фокуса у элементов
+var changeFocus = function (tabindex) {
+  var tabIndexChange = function (elementsArray) {
+    for (var i = 0; i < elementsArray.length; i++) {
+      elementsArray[i].tabIndex = tabindex;
+    }
+  };
+
+  tabIndexChange(pictures.querySelectorAll('.picture'));
+  tabIndexChange(footer.querySelectorAll('a'));
+  tabIndexChange(imgFilters.querySelectorAll('button'));
+};
+
 
 //  Функция отрисовки фотографии
 var renderPhoto = function (photo) {
@@ -133,7 +150,6 @@ var getPhotoObject = function (clickedPicture, photosArray) {
 
 //  mountedBigPicture() - всё добавляет
 var mountedBigPicture = function () {
-  //pictures.style.desabled = true;
   bigPictureCancel.addEventListener('click', closeBigPicture);
   document.addEventListener('keydown', onBigPictureEscPress);
 };
@@ -146,6 +162,7 @@ var destroyedBigPicture = function () {
 var closeBigPicture = function () {
   body.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
+  changeFocus('0');
   destroyedBigPicture();
 };
 
@@ -161,6 +178,7 @@ var openBigPicture = function (clickedPicture) {
     body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
     mountedBigPicture();
+    changeFocus('-1');
 
     bigPictureSocialCommentCount.classList.add('hidden');
     bigPictureCommentsLoader.classList.add('hidden');
