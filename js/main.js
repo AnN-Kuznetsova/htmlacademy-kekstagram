@@ -30,6 +30,7 @@ var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
 var bigPictureDescription = bigPicture.querySelector('.social__caption');
 var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
 var bigPictureSocialComments = bigPicture.querySelector('.social__comments');
+var bigPictureCancel = bigPicture.querySelector('#picture-cancel');
 
 var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
 var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
@@ -130,38 +131,36 @@ var getPhotoObject = function (clickedPicture, photosArray) {
   return photoObj;
 };
 
-/* var mountedImgUploadOverlay = function () {
-  uploadCancel.addEventListener('click', closeImgUploadOverlay);
-  document.addEventListener('keydown', onImgUploadOverlayEscPress);
-
-  scaleControlSmaller.addEventListener('click', setScaleValue);
-  scaleControlBigger.addEventListener('click', setScaleValue);
-
-  for (var i = 0; i < effectsRradioButtons.length; i++) {
-    effectsRradioButtons[i].addEventListener('change', function (evt) {
-      setEffect(evt);
-    });
-  }
-
-  effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
-  effectLevelLine.addEventListener('click', onEffectLevelLineClick);
-  imgUploadForm.addEventListener('submit', onFormSubmit);
-  textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
-  uploadFileInput.addEventListener('change', uploadFileTypeValidation);
+//  mountedBigPicture() - всё добавляет
+var mountedBigPicture = function () {
+  //pictures.style.desabled = true;
+  bigPictureCancel.addEventListener('click', closeBigPicture);
+  document.addEventListener('keydown', onBigPictureEscPress);
 };
 
-//  destroyedImgUploadOverlay() - всё удаляет
-var destroyedImgUploadOverlay = function () {
-  document.removeEventListener('keydown', onImgUploadOverlayEscPress);
-}; */
+//  destroyedBigPicture() - всё удаляет
+var destroyedBigPicture = function () {
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
 
-//var onSmallPictureClick = function (clickedPicture) {
+var closeBigPicture = function () {
+  body.classList.remove('modal-open');
+  bigPicture.classList.add('hidden');
+  destroyedBigPicture();
+};
+
+var onBigPictureEscPress = function (evt) {
+  onPopupEscPress(evt, evt.target, closeBigPicture);
+};
+
+// var onSmallPictureClick = function (clickedPicture) {
 var openBigPicture = function (clickedPicture) {
   var photoObject = getPhotoObject(clickedPicture, photos);
   if (photoObject) {
     renderBigPhoto(photoObject);
     body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
+    mountedBigPicture();
 
     bigPictureSocialCommentCount.classList.add('hidden');
     bigPictureCommentsLoader.classList.add('hidden');
