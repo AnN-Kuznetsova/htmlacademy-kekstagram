@@ -253,7 +253,8 @@ var mountedImgUploadOverlay = function () {
   effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
   effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
-  textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
+  //textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
+  textHashtagsInput.addEventListener('input', onTextHashtagsInput);
   //textDescriptionInput.addEventListener('input', textDescriptionInputValidation);
   textDescriptionInput.addEventListener('input', onTextDescriptionInput);
   uploadFileInput.addEventListener('change', uploadFileTypeValidation);
@@ -518,31 +519,25 @@ var onFormSubmit = function (evt) {
 };
 
 //  Валидация хеш-тегов
-var hashtagsSpecification = {
-  maxHashtagsCount: 5,
-  separator: ' ',
-  minLength: 2,
-  maxLength: 20,
-  description: /(^#[A-Za-zА-Яа-я0-9]+$){1}/
-};
+var hashtagsSpecification = (function () {
+  var maxCount = 5;
+  var hashtagsSeparator = ' ';
+  var hashtagsMinLength = 2;
+  var hashtagsMaxLength = 20;
+  var hashtagsDescription = /(^#[A-Za-zА-Яа-я0-9]+$){1}/;
 
-var textHashtagsInputValidation = function () {
-  var isValidity = true;
-  var validityMessage = '';
-  var hashtags = [];
-
-  var validitiesErrors = {
+  var hashtagsValiditiesErrors = {
     isHashtagsCount: {
       isValid: true,
-      message: 'Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.'
+      message: 'Число хэш-тегов не должно быть больше ' + maxCount + '-ти.'
     },
     isMinLength: {
       isValid: true,
-      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.'
+      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsMinLength + '-х символов.'
     },
     isMaxLength: {
       isValid: true,
-      message: 'Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.'
+      message: 'Длина хэш-тега не должна быть больше ' + hashtagsMaxLength + '-ти символов.'
     },
     isPatternValid: {
       isValid: true,
@@ -554,8 +549,36 @@ var textHashtagsInputValidation = function () {
     }
   };
 
+  var specification = {
+    maxHashtagsCount: maxCount,
+    separator: hashtagsSeparator,
+    minLength: hashtagsMinLength,
+    maxLength: hashtagsMaxLength,
+    description: hashtagsDescription,
+    validitiesErrors: hashtagsValiditiesErrors
+  };
+  return specification;
+})();
+
+var onTextHashtagsInput = function () {
+  textHashtagsInputValidation();
+};
+
+var textHashtagsInputValidation = function () {
+  var specification = hashtagsSpecification;
+  var errorsArray = specification.validitiesErrors;
+  var isValidity = true;
+  var validityMessage = '';
+  var hashtags = [];
+
+  for (var errorElement in errorsArray) {
+    if (!errorsArray[errorElement].isValid) {
+      errorsArray[errorElement].isValid = true;
+    }
+  }
+
   if (textHashtagsInput.value) {
-    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
+    hashtags = textHashtagsInput.value.toLowerCase().split(specification.separator);
     if (hashtags.length) {
       for (var i = (hashtags.length - 1); i >= 0; i--) {
         if (!hashtags[i]) {
@@ -565,32 +588,32 @@ var textHashtagsInputValidation = function () {
     }
 
     if (hashtags.length) {
-      if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
-        validitiesErrors.isHashtagsCount.isValid = false;
+      if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
+        errorsArray.isHashtagsCount.isValid = false;
       }
 
       hashtags.forEach(function (element) {
-        if (!isMoreMinLength(element, hashtagsSpecification.minLength) && validitiesErrors.isMinLength.isValid) {
-          validitiesErrors.isMinLength.isValid = false;
+        if (!isMoreMinLength(element, specification.minLength) && errorsArray.isMinLength.isValid) {
+          errorsArray.isMinLength.isValid = false;
         }
-        if (!isLessMaxLength(element, hashtagsSpecification.maxLength) && validitiesErrors.isMaxLength.isValid) {
-          validitiesErrors.isMaxLength.isValid = false;
+        if (!isLessMaxLength(element, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+          errorsArray.isMaxLength.isValid = false;
         }
-        if (!isPattern(element, hashtagsSpecification.description) && validitiesErrors.isPatternValid.isValid) {
-          validitiesErrors.isPatternValid.isValid = false;
+        if (!isPattern(element, specification.description) && errorsArray.isPatternValid.isValid) {
+          errorsArray.isPatternValid.isValid = false;
         }
       });
 
       if (!hashtags.every(isArrayElementDuplicate)) {
-        validitiesErrors.isElementDuplicate.isValid = false;
+        errorsArray.isElementDuplicate.isValid = false;
       }
     }
   }
 
-  for (var error in validitiesErrors) {
-    if (!validitiesErrors[error].isValid) {
+  for (var error in errorsArray) {
+    if (!errorsArray[error].isValid) {
       isValidity = false;
-      validityMessage += validitiesErrors[error].message + ' \r\n ';
+      validityMessage += errorsArray[error].message + ' \r\n ';
     }
   }
   textHashtagsInput.setCustomValidity(validityMessage);
@@ -599,25 +622,40 @@ var textHashtagsInputValidation = function () {
 };
 
 //  Валидация комментария (описания) для формы загрузки нового изображения
-var textDescriptionSpecification = {
-  minLength: 0,
-  maxLength: textDescriptionInput.getAttribute('maxlength')
-};
+var textDescriptionSpecification = (function () {
+  var textMinLength = textDescriptionInput.getAttribute('minlength');
+  var textMaxLength = textDescriptionInput.getAttribute('maxlength');
 
-var onTextDescriptionInput = function () {
-  var validitiesErrors = {
+  var textValiditiesErrors = {
     isMaxLength: {
       isValid: true,
-      message: 'Длина комментария не должна быть больше ' + textDescriptionSpecification.maxLength + ' символов.'
+      message: 'Длина комментария не должна быть больше ' + textMaxLength + ' символов.'
     }
   };
 
-  return textDescriptionInputValidation(textDescriptionSpecification, validitiesErrors);
+  var specification = {
+    minLength: textMinLength,
+    maxLength: textMaxLength,
+    validitiesErrors: textValiditiesErrors
+  };
+  return specification;
+})();
+
+var onTextDescriptionInput = function () {
+  textDescriptionInputValidation();
 };
 
-var textDescriptionInputValidation = function (specification, errorsArray) {
+var textDescriptionInputValidation = function () {
+  var specification = textDescriptionSpecification;
+  var errorsArray = specification.validitiesErrors;
   var isValidity = true;
   var validityMessage = '';
+
+  for (var element in errorsArray) {
+    if (!errorsArray[element].isValid) {
+      errorsArray[element].isValid = true;
+    }
+  }
 
   if (textDescriptionInput.value) {
     if (!isLessMaxLength(textDescriptionInput.value, specification.maxLength) && errorsArray.isMaxLength.isValid) {
