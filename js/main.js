@@ -254,7 +254,6 @@ var mountedImgUploadOverlay = function () {
   effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
   textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
-  // textDescriptionInput.addEventListener('input', textDescriptionInputValidation);
   uploadFileInput.addEventListener('change', uploadFileTypeValidation);
 };
 
@@ -506,7 +505,6 @@ var initSlider = function () {
 /*  Валидация формы загрузки нового изображения  */
 var imgUploadForm = pictures.querySelector('.img-upload__form');
 var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
-// var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
 var onFormSubmit = function (evt) {
   evt.preventDefault();
@@ -596,35 +594,6 @@ var textHashtagsInputValidation = function () {
 
   return isValidity;
 };
-
-//  Валидация комментария (описания) для формы загрузки нового изображения
-/* var textDescriptionInputValidation = function () {
-  var isValidity = true;
-  var validityMessage = '';
-
-  var validitiesErrors = {
-    isMaxLength: {
-      isValid: true,
-      message: 'Длина комментария не должна быть больше ' + textDescriptionInput.maxLength + '-ти символов.'
-    }
-  };
-
-  if (textDescriptionInput.value) {
-    if (!isLessMaxLength(textDescriptionInput.value, textDescriptionInput.maxLength) && validitiesErrors.isMaxLength.isValid) {
-      validitiesErrors.isMaxLength.isValid = false;
-    }
-  }
-
-  for (var error in validitiesErrors) {
-    if (!validitiesErrors[error].isValid) {
-      isValidity = false;
-      validityMessage += validitiesErrors[error].message + ' \r\n ';
-    }
-  }
-  textDescriptionInput.setCustomValidity(validityMessage);
-
-  return isValidity;
-}; */
 
 //  Валидация типа загружаемого файла
 var uploadFileTypeValidation = function () {
