@@ -78,8 +78,17 @@ var photosCreate = function (photosCount) {
 
 //  Объект контроля фокуса между окнами
 var windowFocus = {
-  setCurrentElement: function (element) {
-    this.currentElement = element;
+  FOCUS_REMOVE_INDEX: '-1',
+  FOCUS_ADD_INDEX: '0',
+
+  focusOut: function (focusElement) {
+    this.changeFocus(this.FOCUS_REMOVE_INDEX);
+    this.currentElement = focusElement;
+  },
+
+  focusIn: function () {
+    windowFocus.changeFocus(this.FOCUS_ADD_INDEX);
+    windowFocus.replaceCurrentElement();
   },
 
   replaceCurrentElement: function () {
@@ -173,8 +182,7 @@ var closeBigPicture = function () {
   body.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
   destroyedBigPicture();
-  windowFocus.changeFocus('0');
-  windowFocus.replaceCurrentElement();
+  windowFocus.focusIn();
 };
 
 var onBigPictureEscPress = function (evt) {
@@ -189,8 +197,7 @@ var openBigPicture = function (clickedPicture) {
     body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
     mountedBigPicture();
-    windowFocus.changeFocus('-1');
-    windowFocus.setCurrentElement(clickedPicture);
+    windowFocus.focusOut(clickedPicture);
 
     bigPictureSocialCommentCount.classList.add('hidden');
     bigPictureCommentsLoader.classList.add('hidden');
@@ -269,8 +276,7 @@ var closeImgUploadOverlay = function () {
   imgUploadOverlay.classList.add('hidden');
   resetImgUploadOverlay();
   destroyedImgUploadOverlay();
-  windowFocus.changeFocus('0');
-  windowFocus.replaceCurrentElement();
+  windowFocus.focusIn();
 };
 
 var onImgUploadOverlayEscPress = function (evt) {
@@ -281,8 +287,7 @@ var openImgUploadOverlay = function () {
   body.classList.add('modal-open');
   imgUploadOverlay.classList.remove('hidden');
   mountedImgUploadOverlay();
-  windowFocus.changeFocus('-1');
-  windowFocus.setCurrentElement(imgUpload.querySelector('.img-upload__label'));
+  windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
   resetEffect();
 };
 
