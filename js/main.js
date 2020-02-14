@@ -76,17 +76,27 @@ var photosCreate = function (photosCount) {
   return photosArray;
 };
 
-//  Функция изменения фокуса у элементов
-var changeFocus = function (tabindex) {
-  var tabIndexChange = function (elementsArray) {
-    for (var i = 0; i < elementsArray.length; i++) {
-      elementsArray[i].tabIndex = tabindex;
-    }
-  };
+//  Объект контроля фокуса между окнами
+var windowFocus = {
+  setCurrentElement: function (element) {
+    this.currentElement = element;
+  },
 
-  tabIndexChange(pictures.querySelectorAll('.picture'));
-  tabIndexChange(footer.querySelectorAll('a'));
-  tabIndexChange(imgFilters.querySelectorAll('button'));
+  replaceCurrentElement: function () {
+    this.currentElement.focus();
+  },
+
+  changeFocus: function (tabindex) {
+    var tabIndexChange = function (elementsArray) {
+      for (var i = 0; i < elementsArray.length; i++) {
+        elementsArray[i].tabIndex = tabindex;
+      }
+    };
+
+    tabIndexChange(pictures.querySelectorAll('.picture'));
+    tabIndexChange(footer.querySelectorAll('a'));
+    tabIndexChange(imgFilters.querySelectorAll('button'));
+  }
 };
 
 
@@ -162,8 +172,9 @@ var destroyedBigPicture = function () {
 var closeBigPicture = function () {
   body.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
-  changeFocus('0');
   destroyedBigPicture();
+  windowFocus.changeFocus('0');
+  windowFocus.replaceCurrentElement();
 };
 
 var onBigPictureEscPress = function (evt) {
@@ -178,7 +189,8 @@ var openBigPicture = function (clickedPicture) {
     body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
     mountedBigPicture();
-    changeFocus('-1');
+    windowFocus.changeFocus('-1');
+    windowFocus.setCurrentElement(clickedPicture);
 
     bigPictureSocialCommentCount.classList.add('hidden');
     bigPictureCommentsLoader.classList.add('hidden');
@@ -257,6 +269,8 @@ var closeImgUploadOverlay = function () {
   imgUploadOverlay.classList.add('hidden');
   resetImgUploadOverlay();
   destroyedImgUploadOverlay();
+  windowFocus.changeFocus('0');
+  windowFocus.replaceCurrentElement();
 };
 
 var onImgUploadOverlayEscPress = function (evt) {
@@ -267,6 +281,8 @@ var openImgUploadOverlay = function () {
   body.classList.add('modal-open');
   imgUploadOverlay.classList.remove('hidden');
   mountedImgUploadOverlay();
+  windowFocus.changeFocus('-1');
+  windowFocus.setCurrentElement(imgUpload.querySelector('.img-upload__label'));
   resetEffect();
 };
 
