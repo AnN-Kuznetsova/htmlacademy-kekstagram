@@ -254,6 +254,7 @@ var mountedImgUploadOverlay = function () {
   effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
   textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
+  // textDescriptionInput.addEventListener('input', textDescriptionInputValidation);
   uploadFileInput.addEventListener('change', uploadFileTypeValidation);
 };
 
@@ -502,30 +503,33 @@ var initSlider = function () {
 };
 
 
-/*  Валидация хеш-тегов  */
+/*  Валидация формы загрузки нового изображения  */
 var imgUploadForm = pictures.querySelector('.img-upload__form');
 var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
-
-var hashtagsSpecification = {
-  maxHashtagsCount: 5,
-  separator: ' ',
-  minLength: 2,
-  maxLength: 20,
-  description: /(^#[A-Za-zА-Яа-я0-9]+$){1}/
-};
+// var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
 var onFormSubmit = function (evt) {
   evt.preventDefault();
-  if (uploadFileTypeValidation() && textHashtagsInputValidation()) {
+  if (uploadFileTypeValidation() && textHashtagsInputValidation() /* && textDescriptionInputValidation() */) {
     evt.target.submit();
     closeImgUploadOverlay();
   }
 };
 
+//  Валидация хеш-тегов
 var textHashtagsInputValidation = function () {
   var isValidity = true;
   var validityMessage = '';
   var hashtags = [];
+
+  var hashtagsSpecification = {
+    maxHashtagsCount: 5,
+    separator: ' ',
+    minLength: 2,
+    maxLength: 20,
+    description: /(^#[A-Za-zА-Яа-я0-9]+$){1}/
+  };
+
   var validitiesErrors = {
     isHashtagsCount: {
       isValid: true,
@@ -593,7 +597,36 @@ var textHashtagsInputValidation = function () {
   return isValidity;
 };
 
-/*  Валидация типа загружаемого файла  */
+//  Валидация комментария (описания) для формы загрузки нового изображения
+/* var textDescriptionInputValidation = function () {
+  var isValidity = true;
+  var validityMessage = '';
+
+  var validitiesErrors = {
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина комментария не должна быть больше ' + textDescriptionInput.maxLength + '-ти символов.'
+    }
+  };
+
+  if (textDescriptionInput.value) {
+    if (!isLessMaxLength(textDescriptionInput.value, textDescriptionInput.maxLength) && validitiesErrors.isMaxLength.isValid) {
+      validitiesErrors.isMaxLength.isValid = false;
+    }
+  }
+
+  for (var error in validitiesErrors) {
+    if (!validitiesErrors[error].isValid) {
+      isValidity = false;
+      validityMessage += validitiesErrors[error].message + ' \r\n ';
+    }
+  }
+  textDescriptionInput.setCustomValidity(validityMessage);
+
+  return isValidity;
+}; */
+
+//  Валидация типа загружаемого файла
 var uploadFileTypeValidation = function () {
   var isValidity = true;
   var pattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
