@@ -254,6 +254,8 @@ var mountedImgUploadOverlay = function () {
   effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
   textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
+  //textDescriptionInput.addEventListener('input', textDescriptionInputValidation);
+  textDescriptionInput.addEventListener('input', onTextDescriptionInput);
   uploadFileInput.addEventListener('change', uploadFileTypeValidation);
 };
 
@@ -505,28 +507,29 @@ var initSlider = function () {
 /*  Валидация формы загрузки нового изображения  */
 var imgUploadForm = pictures.querySelector('.img-upload__form');
 var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
+var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
 var onFormSubmit = function (evt) {
   evt.preventDefault();
-  if (uploadFileTypeValidation() && textHashtagsInputValidation() /* && textDescriptionInputValidation() */) {
+  if (uploadFileTypeValidation() && textHashtagsInputValidation() && textDescriptionInputValidation()) {
     evt.target.submit();
     closeImgUploadOverlay();
   }
 };
 
 //  Валидация хеш-тегов
+var hashtagsSpecification = {
+  maxHashtagsCount: 5,
+  separator: ' ',
+  minLength: 2,
+  maxLength: 20,
+  description: /(^#[A-Za-zА-Яа-я0-9]+$){1}/
+};
+
 var textHashtagsInputValidation = function () {
   var isValidity = true;
   var validityMessage = '';
   var hashtags = [];
-
-  var hashtagsSpecification = {
-    maxHashtagsCount: 5,
-    separator: ' ',
-    minLength: 2,
-    maxLength: 20,
-    description: /(^#[A-Za-zА-Яа-я0-9]+$){1}/
-  };
 
   var validitiesErrors = {
     isHashtagsCount: {
@@ -591,6 +594,44 @@ var textHashtagsInputValidation = function () {
     }
   }
   textHashtagsInput.setCustomValidity(validityMessage);
+
+  return isValidity;
+};
+
+//  Валидация комментария (описания) для формы загрузки нового изображения
+var textDescriptionSpecification = {
+  minLength: 0,
+  maxLength: textDescriptionInput.getAttribute('maxlength')
+};
+
+var onTextDescriptionInput = function () {
+  var validitiesErrors = {
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина комментария не должна быть больше ' + textDescriptionSpecification.maxLength + ' символов.'
+    }
+  };
+
+  return textDescriptionInputValidation(textDescriptionSpecification, validitiesErrors);
+};
+
+var textDescriptionInputValidation = function (specification, errorsArray) {
+  var isValidity = true;
+  var validityMessage = '';
+
+  if (textDescriptionInput.value) {
+    if (!isLessMaxLength(textDescriptionInput.value, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+      errorsArray.isMaxLength.isValid = false;
+    }
+  }
+
+  for (var error in errorsArray) {
+    if (!errorsArray[error].isValid) {
+      isValidity = false;
+      validityMessage += errorsArray[error].message + ' \r\n ';
+    }
+  }
+  textDescriptionInput.setCustomValidity(validityMessage);
 
   return isValidity;
 };
