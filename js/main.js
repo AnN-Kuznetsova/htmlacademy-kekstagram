@@ -169,7 +169,7 @@ var getPhotoObject = function (clickedPicture, photosArray) {
 
 //  mountedBigPicture() - всё добавляет
 var mountedBigPicture = function () {
-  bigPictureCancel.addEventListener('click', closeBigPicture);
+  bigPictureCancel.addEventListener('click', onBigPictureCancelClick);
   document.addEventListener('keydown', onBigPictureEscPress);
 };
 
@@ -183,6 +183,10 @@ var closeBigPicture = function () {
   bigPicture.classList.add('hidden');
   destroyedBigPicture();
   windowFocus.focusIn();
+};
+
+var onBigPictureCancelClick = function () {
+  closeBigPicture();
 };
 
 var onBigPictureEscPress = function (evt) {
@@ -238,11 +242,11 @@ var onPopupEscPress = function (evt, target, closePopup) {
 
 //  mountedImgUploadOverlay() - всё добавляет
 var mountedImgUploadOverlay = function () {
-  uploadCancel.addEventListener('click', closeImgUploadOverlay);
+  uploadCancel.addEventListener('click', onUploadCancelClick);
   document.addEventListener('keydown', onImgUploadOverlayEscPress);
 
-  scaleControlSmaller.addEventListener('click', setScaleValue);
-  scaleControlBigger.addEventListener('click', setScaleValue);
+  scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
+  scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
 
   for (var i = 0; i < effectsRradioButtons.length; i++) {
     effectsRradioButtons[i].addEventListener('change', function (evt) {
@@ -280,6 +284,10 @@ var closeImgUploadOverlay = function () {
   windowFocus.focusIn();
 };
 
+var onUploadCancelClick = function () {
+  closeImgUploadOverlay();
+};
+
 var onImgUploadOverlayEscPress = function (evt) {
   onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
 };
@@ -309,23 +317,30 @@ var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger
 var scaleControlValue = imgUploadOverlay.querySelector('.scale__control--value');
 var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
 
-//  Функция изменения масштаба
-var setScaleValue = function (evt) {
-  var scaleValue = parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
-  if ((evt.target === scaleControlSmaller) && (scaleValue > MIN_SCALE)) {
-    scaleValue -= SCALE_STEP;
-  } else if ((evt.target === scaleControlBigger) && (scaleValue < MAX_SCALE)) {
-    scaleValue += SCALE_STEP;
-  }
-
-  renderScale(scaleValue);
-  // return scaleValue;
+var getScaleValue = function () {
+  return parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
 };
 
 var renderScale = function (scale) {
   scaleControlValue.value = scale + '%';
   scale = (scale / 100);
   imgUploadPreview.style.transform = 'scale(' + scale + ')';
+};
+
+var onScaleControlSmallerClick = function () {
+  var scaleValue = getScaleValue();
+  if (scaleValue > MIN_SCALE) {
+    scaleValue -= SCALE_STEP;
+  }
+  renderScale(scaleValue);
+};
+
+var onScaleControlBiggerClick = function () {
+  var scaleValue = getScaleValue();
+  if (scaleValue < MAX_SCALE) {
+    scaleValue += SCALE_STEP;
+  }
+  renderScale(scaleValue);
 };
 
 
