@@ -651,54 +651,63 @@ var getValidation = function (specification, validationObject) {
   var isValidity = true;
   var validityMessage = '';
 
-  var hashtags = (specification.name === 'hashtagsSpecification') ? validationObject : [];
-  var textDescription = (specification.name === 'descriptionInput') ? validationObject : '';
-  var uploadFileInputValue = (specification.name === 'uploadFile') ? validationObject : '';
-
-
   for (var errorElement in errorsArray) {
     if (!errorsArray[errorElement].isValid) {
       errorsArray[errorElement].isValid = true;
     }
   }
 
-  //  Хэш-теги
-  if (hashtags.length) {
-    if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
-      errorsArray.isHashtagsCount.isValid = false;
-    }
+  switch (specification.name) {
 
-    hashtags.forEach(function (element) {
-      if (!isMoreMinLength(element, specification.minLength) && errorsArray.isMinLength.isValid) {
-        errorsArray.isMinLength.isValid = false;
+    //  Хэш-теги
+    case 'hashtagsSpecification':
+      var hashtags = validationObject;
+      if (hashtags.length) {
+        if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
+          errorsArray.isHashtagsCount.isValid = false;
+        }
+
+        hashtags.forEach(function (element) {
+          if (!isMoreMinLength(element, specification.minLength) && errorsArray.isMinLength.isValid) {
+            errorsArray.isMinLength.isValid = false;
+          }
+          if (!isLessMaxLength(element, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+            errorsArray.isMaxLength.isValid = false;
+          }
+          if (!isPattern(element, specification.description) && errorsArray.isPatternValid.isValid) {
+            errorsArray.isPatternValid.isValid = false;
+          }
+        });
+
+        if (!hashtags.every(isArrayElementDuplicate)) {
+          errorsArray.isElementDuplicate.isValid = false;
+        }
       }
-      if (!isLessMaxLength(element, specification.maxLength) && errorsArray.isMaxLength.isValid) {
-        errorsArray.isMaxLength.isValid = false;
+      break;
+
+    //  Поле ввода комментария (описания) формы редактирования изображения
+    case 'descriptionInput':
+      var textDescription = validationObject;
+      if (textDescription) {
+        if (!isLessMaxLength(textDescription, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+          errorsArray.isMaxLength.isValid = false;
+        }
       }
-      if (!isPattern(element, specification.description) && errorsArray.isPatternValid.isValid) {
-        errorsArray.isPatternValid.isValid = false;
+      break;
+
+    //  Загружаемый файл
+    case 'uploadFile':
+      var uploadFileInputValue = validationObject;
+      if (uploadFileInputValue) {
+        if (!isPattern(uploadFileInputValue, specification.pattern) && errorsArray.isPatternValid.isValid) {
+          errorsArray.isPatternValid.isValid = false;
+        }
       }
-    });
+      break;
 
-    if (!hashtags.every(isArrayElementDuplicate)) {
-      errorsArray.isElementDuplicate.isValid = false;
-    }
+    default:
+      throw new Error('Неизвестная спецификация поля.');
   }
-
-  //  Поле ввода комментария (описания) формы редактирования изображения
-  if (textDescription) {
-    if (!isLessMaxLength(textDescription, specification.maxLength) && errorsArray.isMaxLength.isValid) {
-      errorsArray.isMaxLength.isValid = false;
-    }
-  }
-
-  //  Загружаемый файл
-  if (uploadFileInputValue) {
-    if (!isPattern(uploadFileInputValue, specification.pattern) && errorsArray.isPatternValid.isValid) {
-      errorsArray.isPatternValid.isValid = false;
-    }
-  }
-
 
   for (var error in errorsArray) {
     if (!errorsArray[error].isValid) {
