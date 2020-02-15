@@ -255,7 +255,7 @@ var mountedImgUploadOverlay = function () {
   imgUploadForm.addEventListener('submit', onFormSubmit);
   textHashtagsInput.addEventListener('input', onTextHashtagsInput);
   textDescriptionInput.addEventListener('input', onTextDescriptionInput);
-  uploadFileInput.addEventListener('change', uploadFileTypeValidation);   /////////////////////////////////////////////
+  uploadFileInput.addEventListener('change', onUploadFileInputChange);
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -510,7 +510,7 @@ var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
 var onFormSubmit = function (evt) {
   evt.preventDefault();
-  if (uploadFileTypeValidation() && textHashtagsInputValidation() && textDescriptionInputValidation()) {
+  if (uploadFileValidation() && textHashtagsInputValidation() && textDescriptionInputValidation()) {
     evt.target.submit();
     closeImgUploadOverlay();
   }
@@ -612,18 +612,31 @@ var textDescriptionInputValidation = function () {
 };
 
 //  Валидация типа загружаемого файла
-var uploadFileTypeValidation = function () {
-  var isValidity = true;
-  var pattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
+var uploadFileSpecification = (function () {
+  var uploadFilePattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
 
-  if (!isPattern(uploadFileInput.value.toLowerCase(), pattern)) {
-    isValidity = false;
-    uploadFileInput.setCustomValidity('Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg');
-  } else {
-    uploadFileInput.setCustomValidity('');
-  }
+  var uploadFileValiditiesErrors = {
+    isPatternValid: {
+      isValid: true,
+      message: 'Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg.'
+    }
+  };
 
-  return isValidity;
+  var specification = {
+    pattern: uploadFilePattern,
+    validitiesErrors: uploadFileValiditiesErrors
+  };
+  return specification;
+})();
+
+var onUploadFileInputChange = function () {
+  uploadFileValidation();
+};
+
+var uploadFileValidation = function () {
+  var validityResalt = getValidation(uploadFileSpecification, 'uploadFile', uploadFileInput.value.toLowerCase());
+  uploadFileInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
 };
 
 
@@ -634,6 +647,7 @@ var getValidation = function (specification) {
 
   var hashtags = (arguments[1] === 'hashtags') ? arguments[2] : [];
   var textDescription = (arguments[1] === 'descriptionInput') ? arguments[2] : '';
+  var uploadFileInputValue = (arguments[1] === 'uploadFile') ? arguments[2] : '';
 
 
   for (var errorElement in errorsArray) {
@@ -669,6 +683,13 @@ var getValidation = function (specification) {
   if (textDescription) {
     if (!isLessMaxLength(textDescription, specification.maxLength) && errorsArray.isMaxLength.isValid) {
       errorsArray.isMaxLength.isValid = false;
+    }
+  }
+
+  //  Загружаемый файл
+  if (uploadFileInputValue) {
+    if (!isPattern(uploadFileInputValue, specification.pattern) && errorsArray.isPatternValid.isValid) {
+      errorsArray.isPatternValid.isValid = false;
     }
   }
 
