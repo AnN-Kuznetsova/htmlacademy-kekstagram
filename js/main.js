@@ -504,147 +504,16 @@ var initSlider = function () {
 
 
 /*  Валидация формы загрузки нового изображения  */
+
 var imgUploadForm = pictures.querySelector('.img-upload__form');
 var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
 var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
-var onFormSubmit = function (evt) {
-  evt.preventDefault();
-  if (uploadFileValidation() && textHashtagsInputValidation() && textDescriptionInputValidation()) {
-    evt.target.submit();
-    closeImgUploadOverlay();
-  }
+var ValidationSpecificationName = {
+  HASHTAGS: 'hashtagsSpecification',
+  DESCRIPTION: 'descriptionSpecification',
+  UPLOAD_FILE: 'uploadFileSpecification'
 };
-
-//  Валидация хеш-тегов
-var hashtagsSpecification = (function () {
-  var specificationName = 'hashtagsSpecification';
-  var maxCount = 5;
-  var hashtagsSeparator = ' ';
-  var hashtagsMinLength = 2;
-  var hashtagsMaxLength = 20;
-  var hashtagsDescription = /(^#[A-Za-zА-Яа-я0-9]+$){1}/;
-
-  var hashtagsValiditiesErrors = {
-    isHashtagsCount: {
-      isValid: true,
-      message: 'Число хэш-тегов не должно быть больше ' + maxCount + '-ти.'
-    },
-    isMinLength: {
-      isValid: true,
-      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsMinLength + '-х символов.'
-    },
-    isMaxLength: {
-      isValid: true,
-      message: 'Длина хэш-тега не должна быть больше ' + hashtagsMaxLength + '-ти символов.'
-    },
-    isPatternValid: {
-      isValid: true,
-      message: 'Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.'
-    },
-    isElementDuplicate: {
-      isValid: true,
-      message: 'Хэш-теги не могут дублироваться (регистр ввода не учитывается).'
-    }
-  };
-
-  var specification = {
-    name: specificationName,
-    maxHashtagsCount: maxCount,
-    separator: hashtagsSeparator,
-    minLength: hashtagsMinLength,
-    maxLength: hashtagsMaxLength,
-    description: hashtagsDescription,
-    validitiesErrors: hashtagsValiditiesErrors
-  };
-  return specification;
-})();
-
-var onTextHashtagsInput = function () {
-  textHashtagsInputValidation();
-};
-
-var textHashtagsInputValidation = function () {
-  var hashtags = [];
-
-  if (textHashtagsInput.value) {
-    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
-    if (hashtags.length) {
-      for (var i = (hashtags.length - 1); i >= 0; i--) {
-        if (!hashtags[i]) {
-          hashtags.splice(i, 1);
-        }
-      }
-    }
-  }
-
-  var validityResalt = getValidation(hashtagsSpecification, hashtags);
-  textHashtagsInput.setCustomValidity(validityResalt.message);
-  return validityResalt.resalt;
-};
-
-//  Валидация комментария (описания) для формы загрузки нового изображения
-var textDescriptionSpecification = (function () {
-  var specificationName = 'descriptionInput';
-  var textMinLength = textDescriptionInput.getAttribute('minlength');
-  var textMaxLength = textDescriptionInput.getAttribute('maxlength');
-
-  var textValiditiesErrors = {
-    isMaxLength: {
-      isValid: true,
-      message: 'Длина комментария не должна быть больше ' + textMaxLength + ' символов.'
-    }
-  };
-
-  var specification = {
-    name: specificationName,
-    minLength: textMinLength,
-    maxLength: textMaxLength,
-    validitiesErrors: textValiditiesErrors
-  };
-  return specification;
-})();
-
-var onTextDescriptionInput = function () {
-  textDescriptionInputValidation();
-};
-
-var textDescriptionInputValidation = function () {
-  var validityResalt = getValidation(textDescriptionSpecification, textDescriptionInput.value);
-  textDescriptionInput.setCustomValidity(validityResalt.message);
-  return validityResalt.resalt;
-};
-
-//  Валидация типа загружаемого файла
-var uploadFileSpecification = (function () {
-  var specificationName = 'uploadFile';
-  var uploadFilePattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
-
-  var uploadFileValiditiesErrors = {
-    isPatternValid: {
-      isValid: true,
-      message: 'Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg.'
-    }
-  };
-
-  var specification = {
-    name: specificationName,
-    pattern: uploadFilePattern,
-    validitiesErrors: uploadFileValiditiesErrors
-  };
-  return specification;
-})();
-
-var onUploadFileInputChange = function () {
-  uploadFileValidation();
-};
-
-var uploadFileValidation = function () {
-  var validityResalt = getValidation(uploadFileSpecification, uploadFileInput.value.toLowerCase());
-  uploadFileInput.setCustomValidity(validityResalt.message);
-  return validityResalt.resalt;
-};
-
 
 var getValidation = function (specification, validationObject) {
   var errorsArray = specification.validitiesErrors;
@@ -660,7 +529,7 @@ var getValidation = function (specification, validationObject) {
   switch (specification.name) {
 
     //  Хэш-теги
-    case 'hashtagsSpecification':
+    case ValidationSpecificationName.HASHTAGS:
       var hashtags = validationObject;
       if (hashtags.length) {
         if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
@@ -686,7 +555,7 @@ var getValidation = function (specification, validationObject) {
       break;
 
     //  Поле ввода комментария (описания) формы редактирования изображения
-    case 'descriptionInput':
+    case ValidationSpecificationName.DESCRIPTION:
       var textDescription = validationObject;
       if (textDescription) {
         if (!isLessMaxLength(textDescription, specification.maxLength) && errorsArray.isMaxLength.isValid) {
@@ -696,7 +565,7 @@ var getValidation = function (specification, validationObject) {
       break;
 
     //  Загружаемый файл
-    case 'uploadFile':
+    case ValidationSpecificationName.UPLOAD_FILE:
       var uploadFileInputValue = validationObject;
       if (uploadFileInputValue) {
         if (!isPattern(uploadFileInputValue, specification.pattern) && errorsArray.isPatternValid.isValid) {
@@ -740,4 +609,139 @@ var isPattern = function (str, pattern) {
 
 var isArrayElementDuplicate = function (element, index, array) {
   return !(array.includes(element, (index + 1)));
+};
+
+
+var onFormSubmit = function (evt) {
+  evt.preventDefault();
+  if (uploadFileValidation() && textHashtagsInputValidation() && textDescriptionInputValidation()) {
+    evt.target.submit();
+    closeImgUploadOverlay();
+  }
+};
+
+//  Валидация хеш-тегов
+var hashtagsSpecification = (function () {
+  var maxCount = 5;
+  var hashtagsSeparator = ' ';
+  var hashtagsMinLength = 2;
+  var hashtagsMaxLength = 20;
+  var hashtagsDescription = /(^#[A-Za-zА-Яа-я0-9]+$){1}/;
+
+  var hashtagsValiditiesErrors = {
+    isHashtagsCount: {
+      isValid: true,
+      message: 'Число хэш-тегов не должно быть больше ' + maxCount + '-ти.'
+    },
+    isMinLength: {
+      isValid: true,
+      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsMinLength + '-х символов.'
+    },
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина хэш-тега не должна быть больше ' + hashtagsMaxLength + '-ти символов.'
+    },
+    isPatternValid: {
+      isValid: true,
+      message: 'Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.'
+    },
+    isElementDuplicate: {
+      isValid: true,
+      message: 'Хэш-теги не могут дублироваться (регистр ввода не учитывается).'
+    }
+  };
+
+  var specification = {
+    name: ValidationSpecificationName.HASHTAGS,
+    maxHashtagsCount: maxCount,
+    separator: hashtagsSeparator,
+    minLength: hashtagsMinLength,
+    maxLength: hashtagsMaxLength,
+    description: hashtagsDescription,
+    validitiesErrors: hashtagsValiditiesErrors
+  };
+  return specification;
+})();
+
+var textHashtagsInputValidation = function () {
+  var hashtags = [];
+
+  if (textHashtagsInput.value) {
+    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
+    if (hashtags.length) {
+      for (var i = (hashtags.length - 1); i >= 0; i--) {
+        if (!hashtags[i]) {
+          hashtags.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  var validityResalt = getValidation(hashtagsSpecification, hashtags);
+  textHashtagsInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
+};
+
+var onTextHashtagsInput = function () {
+  textHashtagsInputValidation();
+};
+
+//  Валидация комментария (описания) для формы загрузки нового изображения
+var textDescriptionSpecification = (function () {
+  var textMinLength = textDescriptionInput.getAttribute('minlength');
+  var textMaxLength = textDescriptionInput.getAttribute('maxlength');
+
+  var textValiditiesErrors = {
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина комментария не должна быть больше ' + textMaxLength + ' символов.'
+    }
+  };
+
+  var specification = {
+    name: ValidationSpecificationName.DESCRIPTION,
+    minLength: textMinLength,
+    maxLength: textMaxLength,
+    validitiesErrors: textValiditiesErrors
+  };
+  return specification;
+})();
+
+var textDescriptionInputValidation = function () {
+  var validityResalt = getValidation(textDescriptionSpecification, textDescriptionInput.value);
+  textDescriptionInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
+};
+
+var onTextDescriptionInput = function () {
+  textDescriptionInputValidation();
+};
+
+//  Валидация типа загружаемого файла
+var uploadFileSpecification = (function () {
+  var uploadFilePattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
+
+  var uploadFileValiditiesErrors = {
+    isPatternValid: {
+      isValid: true,
+      message: 'Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg.'
+    }
+  };
+
+  var specification = {
+    name: ValidationSpecificationName.UPLOAD_FILE,
+    pattern: uploadFilePattern,
+    validitiesErrors: uploadFileValiditiesErrors
+  };
+  return specification;
+})();
+
+var uploadFileValidation = function () {
+  var validityResalt = getValidation(uploadFileSpecification, uploadFileInput.value.toLowerCase());
+  uploadFileInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
+};
+
+var onUploadFileInputChange = function () {
+  uploadFileValidation();
 };
