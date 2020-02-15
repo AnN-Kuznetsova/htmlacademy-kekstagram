@@ -518,6 +518,7 @@ var onFormSubmit = function (evt) {
 
 //  Валидация хеш-тегов
 var hashtagsSpecification = (function () {
+  var specificationName = 'hashtagsSpecification';
   var maxCount = 5;
   var hashtagsSeparator = ' ';
   var hashtagsMinLength = 2;
@@ -548,6 +549,7 @@ var hashtagsSpecification = (function () {
   };
 
   var specification = {
+    name: specificationName,
     maxHashtagsCount: maxCount,
     separator: hashtagsSeparator,
     minLength: hashtagsMinLength,
@@ -576,13 +578,14 @@ var textHashtagsInputValidation = function () {
     }
   }
 
-  var validityResalt = getValidation(hashtagsSpecification, 'hashtags', hashtags);
+  var validityResalt = getValidation(hashtagsSpecification, hashtags);
   textHashtagsInput.setCustomValidity(validityResalt.message);
   return validityResalt.resalt;
 };
 
 //  Валидация комментария (описания) для формы загрузки нового изображения
 var textDescriptionSpecification = (function () {
+  var specificationName = 'descriptionInput';
   var textMinLength = textDescriptionInput.getAttribute('minlength');
   var textMaxLength = textDescriptionInput.getAttribute('maxlength');
 
@@ -594,6 +597,7 @@ var textDescriptionSpecification = (function () {
   };
 
   var specification = {
+    name: specificationName,
     minLength: textMinLength,
     maxLength: textMaxLength,
     validitiesErrors: textValiditiesErrors
@@ -606,13 +610,14 @@ var onTextDescriptionInput = function () {
 };
 
 var textDescriptionInputValidation = function () {
-  var validityResalt = getValidation(textDescriptionSpecification, 'descriptionInput', textDescriptionInput.value);
+  var validityResalt = getValidation(textDescriptionSpecification, textDescriptionInput.value);
   textDescriptionInput.setCustomValidity(validityResalt.message);
   return validityResalt.resalt;
 };
 
 //  Валидация типа загружаемого файла
 var uploadFileSpecification = (function () {
+  var specificationName = 'uploadFile';
   var uploadFilePattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
 
   var uploadFileValiditiesErrors = {
@@ -623,6 +628,7 @@ var uploadFileSpecification = (function () {
   };
 
   var specification = {
+    name: specificationName,
     pattern: uploadFilePattern,
     validitiesErrors: uploadFileValiditiesErrors
   };
@@ -634,20 +640,20 @@ var onUploadFileInputChange = function () {
 };
 
 var uploadFileValidation = function () {
-  var validityResalt = getValidation(uploadFileSpecification, 'uploadFile', uploadFileInput.value.toLowerCase());
+  var validityResalt = getValidation(uploadFileSpecification, uploadFileInput.value.toLowerCase());
   uploadFileInput.setCustomValidity(validityResalt.message);
   return validityResalt.resalt;
 };
 
 
-var getValidation = function (specification) {
+var getValidation = function (specification, validationObject) {
   var errorsArray = specification.validitiesErrors;
   var isValidity = true;
   var validityMessage = '';
 
-  var hashtags = (arguments[1] === 'hashtags') ? arguments[2] : [];
-  var textDescription = (arguments[1] === 'descriptionInput') ? arguments[2] : '';
-  var uploadFileInputValue = (arguments[1] === 'uploadFile') ? arguments[2] : '';
+  var hashtags = (specification.name === 'hashtagsSpecification') ? validationObject : [];
+  var textDescription = (specification.name === 'descriptionInput') ? validationObject : '';
+  var uploadFileInputValue = (specification.name === 'uploadFile') ? validationObject : '';
 
 
   for (var errorElement in errorsArray) {
