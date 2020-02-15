@@ -253,11 +253,9 @@ var mountedImgUploadOverlay = function () {
   effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
   effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
-  //textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
   textHashtagsInput.addEventListener('input', onTextHashtagsInput);
-  //textDescriptionInput.addEventListener('input', textDescriptionInputValidation);
   textDescriptionInput.addEventListener('input', onTextDescriptionInput);
-  uploadFileInput.addEventListener('change', uploadFileTypeValidation);
+  uploadFileInput.addEventListener('change', uploadFileTypeValidation);   /////////////////////////////////////////////
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -565,20 +563,10 @@ var onTextHashtagsInput = function () {
 };
 
 var textHashtagsInputValidation = function () {
-  var specification = hashtagsSpecification;
-  var errorsArray = specification.validitiesErrors;
-  var isValidity = true;
-  var validityMessage = '';
   var hashtags = [];
 
-  for (var errorElement in errorsArray) {
-    if (!errorsArray[errorElement].isValid) {
-      errorsArray[errorElement].isValid = true;
-    }
-  }
-
   if (textHashtagsInput.value) {
-    hashtags = textHashtagsInput.value.toLowerCase().split(specification.separator);
+    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
     if (hashtags.length) {
       for (var i = (hashtags.length - 1); i >= 0; i--) {
         if (!hashtags[i]) {
@@ -586,39 +574,11 @@ var textHashtagsInputValidation = function () {
         }
       }
     }
-
-    if (hashtags.length) {
-      if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
-        errorsArray.isHashtagsCount.isValid = false;
-      }
-
-      hashtags.forEach(function (element) {
-        if (!isMoreMinLength(element, specification.minLength) && errorsArray.isMinLength.isValid) {
-          errorsArray.isMinLength.isValid = false;
-        }
-        if (!isLessMaxLength(element, specification.maxLength) && errorsArray.isMaxLength.isValid) {
-          errorsArray.isMaxLength.isValid = false;
-        }
-        if (!isPattern(element, specification.description) && errorsArray.isPatternValid.isValid) {
-          errorsArray.isPatternValid.isValid = false;
-        }
-      });
-
-      if (!hashtags.every(isArrayElementDuplicate)) {
-        errorsArray.isElementDuplicate.isValid = false;
-      }
-    }
   }
 
-  for (var error in errorsArray) {
-    if (!errorsArray[error].isValid) {
-      isValidity = false;
-      validityMessage += errorsArray[error].message + ' \r\n ';
-    }
-  }
-  textHashtagsInput.setCustomValidity(validityMessage);
-
-  return isValidity;
+  var validityResalt = getValidation(hashtagsSpecification, 'hashtags', hashtags);
+  textHashtagsInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
 };
 
 //  Валидация комментария (описания) для формы загрузки нового изображения
@@ -646,32 +606,9 @@ var onTextDescriptionInput = function () {
 };
 
 var textDescriptionInputValidation = function () {
-  var specification = textDescriptionSpecification;
-  var errorsArray = specification.validitiesErrors;
-  var isValidity = true;
-  var validityMessage = '';
-
-  for (var element in errorsArray) {
-    if (!errorsArray[element].isValid) {
-      errorsArray[element].isValid = true;
-    }
-  }
-
-  if (textDescriptionInput.value) {
-    if (!isLessMaxLength(textDescriptionInput.value, specification.maxLength) && errorsArray.isMaxLength.isValid) {
-      errorsArray.isMaxLength.isValid = false;
-    }
-  }
-
-  for (var error in errorsArray) {
-    if (!errorsArray[error].isValid) {
-      isValidity = false;
-      validityMessage += errorsArray[error].message + ' \r\n ';
-    }
-  }
-  textDescriptionInput.setCustomValidity(validityMessage);
-
-  return isValidity;
+  var validityResalt = getValidation(textDescriptionSpecification, 'descriptionInput', textDescriptionInput.value);
+  textDescriptionInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
 };
 
 //  Валидация типа загружаемого файла
@@ -689,6 +626,65 @@ var uploadFileTypeValidation = function () {
   return isValidity;
 };
 
+
+var getValidation = function (specification) {
+  var errorsArray = specification.validitiesErrors;
+  var isValidity = true;
+  var validityMessage = '';
+
+  var hashtags = (arguments[1] === 'hashtags') ? arguments[2] : [];
+  var textDescription = (arguments[1] === 'descriptionInput') ? arguments[2] : '';
+
+
+  for (var errorElement in errorsArray) {
+    if (!errorsArray[errorElement].isValid) {
+      errorsArray[errorElement].isValid = true;
+    }
+  }
+
+  //  Хэш-теги
+  if (hashtags.length) {
+    if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
+      errorsArray.isHashtagsCount.isValid = false;
+    }
+
+    hashtags.forEach(function (element) {
+      if (!isMoreMinLength(element, specification.minLength) && errorsArray.isMinLength.isValid) {
+        errorsArray.isMinLength.isValid = false;
+      }
+      if (!isLessMaxLength(element, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+        errorsArray.isMaxLength.isValid = false;
+      }
+      if (!isPattern(element, specification.description) && errorsArray.isPatternValid.isValid) {
+        errorsArray.isPatternValid.isValid = false;
+      }
+    });
+
+    if (!hashtags.every(isArrayElementDuplicate)) {
+      errorsArray.isElementDuplicate.isValid = false;
+    }
+  }
+
+  //  Поле ввода комментария (описания) формы редактирования изображения
+  if (textDescription) {
+    if (!isLessMaxLength(textDescription, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+      errorsArray.isMaxLength.isValid = false;
+    }
+  }
+
+
+  for (var error in errorsArray) {
+    if (!errorsArray[error].isValid) {
+      isValidity = false;
+      validityMessage += errorsArray[error].message + ' \r\n ';
+    }
+  }
+
+  return {
+    resalt: isValidity,
+    message: validityMessage
+  };
+};
 
 var isArrayLength = function (array, maxLength) {
   return (array.length > maxLength) ? false : true;
