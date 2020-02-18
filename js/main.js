@@ -1,5 +1,6 @@
 'use strict';
 var ESC_KEY = 'Escape';
+var ENTER_KEY = 'Enter';
 
 var PHOTOS_COUNT = 25;
 var MIN_LIKES = 15;
@@ -21,6 +22,9 @@ var COMMENTS_TEXTS = [
 var AUTHORS_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
 
 var body = document.querySelector('body');
+var footer = document.querySelector('footer');
+
+var imgFilters = document.querySelector('.img-filters');
 
 var pictures = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
@@ -29,9 +33,10 @@ var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
 var bigPictureDescription = bigPicture.querySelector('.social__caption');
 var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
 var bigPictureSocialComments = bigPicture.querySelector('.social__comments');
+var bigPictureCancel = bigPicture.querySelector('#picture-cancel');
 
-/* var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
-var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader'); */
+var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
+var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
 
 var photoTemplate = document.querySelector('#picture').content;
 var socialCommentTemplate = document.querySelector('#social-comment').content;
@@ -71,6 +76,39 @@ var photosCreate = function (photosCount) {
   return photosArray;
 };
 
+//  Объект контроля фокуса между окнами
+var windowFocus = {
+  FOCUS_REMOVE_INDEX: '-1',
+  FOCUS_ADD_INDEX: '0',
+
+  focusOut: function (focusElement) {
+    this.changeFocus(this.FOCUS_REMOVE_INDEX);
+    this.currentElement = focusElement;
+  },
+
+  focusIn: function () {
+    windowFocus.changeFocus(this.FOCUS_ADD_INDEX);
+    windowFocus.replaceCurrentElement();
+  },
+
+  replaceCurrentElement: function () {
+    this.currentElement.focus();
+  },
+
+  changeFocus: function (tabindex) {
+    var tabIndexChange = function (elementsArray) {
+      for (var i = 0; i < elementsArray.length; i++) {
+        elementsArray[i].tabIndex = tabindex;
+      }
+    };
+
+    tabIndexChange(pictures.querySelectorAll('.picture'));
+    tabIndexChange(footer.querySelectorAll('a'));
+    tabIndexChange(imgFilters.querySelectorAll('button'));
+  }
+};
+
+
 //  Функция отрисовки фотографии
 var renderPhoto = function (photo) {
   var photoElement = photoTemplate.cloneNode(true);
@@ -88,9 +126,6 @@ var renderPhotos = function (photosArray) {
   }
   return fragment;
 };
-
-var photos = photosCreate(PHOTOS_COUNT);
-pictures.appendChild(renderPhotos(photos));
 
 
 /*  Большая фотография  */
@@ -116,6 +151,7 @@ var renderSocialComments = function (commentsArray) {
 //  Функция отрисовки большой фотографии
 var renderBigPhoto = function (bigPhoto) {
   bigPictureImg.src = bigPhoto.url;
+  bigPictureImg.alt = bigPhoto.description;
   bigPictureLikesCount.textContent = bigPhoto.likes;
   bigPictureCommentsCount.textContent = bigPhoto.comments.length;
   bigPictureDescription.textContent = bigPhoto.description;
@@ -123,13 +159,68 @@ var renderBigPhoto = function (bigPhoto) {
   bigPictureSocialComments.appendChild(renderSocialComments(bigPhoto.comments));
 };
 
-renderBigPhoto(photos[0]);
+//  Функция нахождения объекта фотографии
+var getPhotoObject = function (clickedPicture, photosArray) {
+  var picturesArray = pictures.querySelectorAll('.picture');
+  var index = Array.prototype.indexOf.call(picturesArray, clickedPicture);
+  var photoObj = (index >= 0) ? photosArray[index] : '';
+  return photoObj;
+};
 
-/* body.classList.add('modal-open');
-bigPictureSocialCommentCount.classList.add('hidden');
-bigPictureCommentsLoader.classList.add('hidden');
-bigPicture.classList.remove('hidden'); */
+//  mountedBigPicture() - всё добавляет
+var mountedBigPicture = function () {
+  bigPictureCancel.addEventListener('click', onBigPictureCancelClick);
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
 
+//  destroyedBigPicture() - всё удаляет
+var destroyedBigPicture = function () {
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+var closeBigPicture = function () {
+  body.classList.remove('modal-open');
+  bigPicture.classList.add('hidden');
+  destroyedBigPicture();
+  windowFocus.focusIn();
+};
+
+var onBigPictureCancelClick = function () {
+  closeBigPicture();
+};
+
+var onBigPictureEscPress = function (evt) {
+  onPopupEscPress(evt, evt.target, closeBigPicture);
+};
+
+// var onSmallPictureClick = function (clickedPicture) {
+var openBigPicture = function (clickedPicture) {
+  var photoObject = getPhotoObject(clickedPicture, photos);
+  if (photoObject) {
+    renderBigPhoto(photoObject);
+    body.classList.add('modal-open');
+    bigPicture.classList.remove('hidden');
+    mountedBigPicture();
+    windowFocus.focusOut(clickedPicture);
+
+    bigPictureSocialCommentCount.classList.add('hidden');
+    bigPictureCommentsLoader.classList.add('hidden');
+  }
+};
+
+
+var photos = photosCreate(PHOTOS_COUNT);
+pictures.appendChild(renderPhotos(photos));
+
+pictures.addEventListener('click', function (evt) {
+  openBigPicture(evt.target.parentNode);
+});
+
+pictures.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    openBigPicture(evt.target);
+  }
+});
 
 /*  Загрузка изображения  */
 
@@ -151,11 +242,11 @@ var onPopupEscPress = function (evt, target, closePopup) {
 
 //  mountedImgUploadOverlay() - всё добавляет
 var mountedImgUploadOverlay = function () {
-  uploadCancel.addEventListener('click', closeImgUploadOverlay);
+  uploadCancel.addEventListener('click', onUploadCancelClick);
   document.addEventListener('keydown', onImgUploadOverlayEscPress);
 
-  scaleControlSmaller.addEventListener('click', setScaleValue);
-  scaleControlBigger.addEventListener('click', setScaleValue);
+  scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
+  scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
 
   for (var i = 0; i < effectsRradioButtons.length; i++) {
     effectsRradioButtons[i].addEventListener('change', function (evt) {
@@ -166,8 +257,9 @@ var mountedImgUploadOverlay = function () {
   effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
   effectLevelLine.addEventListener('click', onEffectLevelLineClick);
   imgUploadForm.addEventListener('submit', onFormSubmit);
-  textHashtagsInput.addEventListener('input', textHashtagsInputValidation);
-  uploadFileInput.addEventListener('change', uploadFileTypeValidation);
+  textHashtagsInput.addEventListener('input', onTextHashtagsInput);
+  textDescriptionInput.addEventListener('input', onTextDescriptionInput);
+  uploadFileInput.addEventListener('change', onUploadFileInputChange);
 };
 
 //  destroyedImgUploadOverlay() - всё удаляет
@@ -189,6 +281,11 @@ var closeImgUploadOverlay = function () {
   imgUploadOverlay.classList.add('hidden');
   resetImgUploadOverlay();
   destroyedImgUploadOverlay();
+  windowFocus.focusIn();
+};
+
+var onUploadCancelClick = function () {
+  closeImgUploadOverlay();
 };
 
 var onImgUploadOverlayEscPress = function (evt) {
@@ -199,6 +296,7 @@ var openImgUploadOverlay = function () {
   body.classList.add('modal-open');
   imgUploadOverlay.classList.remove('hidden');
   mountedImgUploadOverlay();
+  windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
   resetEffect();
 };
 
@@ -219,23 +317,30 @@ var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger
 var scaleControlValue = imgUploadOverlay.querySelector('.scale__control--value');
 var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
 
-//  Функция изменения масштаба
-var setScaleValue = function (evt) {
-  var scaleValue = parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
-  if ((evt.target === scaleControlSmaller) && (scaleValue > MIN_SCALE)) {
-    scaleValue -= SCALE_STEP;
-  } else if ((evt.target === scaleControlBigger) && (scaleValue < MAX_SCALE)) {
-    scaleValue += SCALE_STEP;
-  }
-
-  renderScale(scaleValue);
-  // return scaleValue;
+var getScaleValue = function () {
+  return parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
 };
 
 var renderScale = function (scale) {
   scaleControlValue.value = scale + '%';
   scale = (scale / 100);
   imgUploadPreview.style.transform = 'scale(' + scale + ')';
+};
+
+var onScaleControlSmallerClick = function () {
+  var scaleValue = getScaleValue();
+  if (scaleValue > MIN_SCALE) {
+    scaleValue -= SCALE_STEP;
+  }
+  renderScale(scaleValue);
+};
+
+var onScaleControlBiggerClick = function () {
+  var scaleValue = getScaleValue();
+  if (scaleValue < MAX_SCALE) {
+    scaleValue += SCALE_STEP;
+  }
+  renderScale(scaleValue);
 };
 
 
@@ -413,112 +518,93 @@ var initSlider = function () {
 };
 
 
-/*  Валидация хеш-тегов  */
+/*  Валидация формы загрузки нового изображения  */
+
 var imgUploadForm = pictures.querySelector('.img-upload__form');
 var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
+var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
-var hashtagsSpecification = {
-  maxHashtagsCount: 5,
-  separator: ' ',
-  minLength: 2,
-  maxLength: 20,
-  description: /(^#[A-Za-zА-Яа-я0-9]+$){1}/
+var ValidationSpecificationName = {
+  HASHTAGS: 'hashtagsSpecification',
+  DESCRIPTION: 'descriptionSpecification',
+  UPLOAD_FILE: 'uploadFileSpecification'
 };
 
-var onFormSubmit = function (evt) {
-  evt.preventDefault();
-  if (uploadFileTypeValidation() && textHashtagsInputValidation()) {
-    evt.target.submit();
-    closeImgUploadOverlay();
-  }
-};
-
-var textHashtagsInputValidation = function () {
+var getValidation = function (specification, validationObject) {
+  var errorsArray = specification.validitiesErrors;
   var isValidity = true;
   var validityMessage = '';
-  var hashtags = [];
-  var validitiesErrors = {
-    isHashtagsCount: {
-      isValid: true,
-      message: 'Число хэш-тегов не должно быть больше ' + hashtagsSpecification.maxHashtagsCount + '-ти.'
-    },
-    isMinLength: {
-      isValid: true,
-      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsSpecification.minLength + '-х символов.'
-    },
-    isMaxLength: {
-      isValid: true,
-      message: 'Длина хэш-тега не должна быть больше ' + hashtagsSpecification.maxLength + '-ти символов.'
-    },
-    isPatternValid: {
-      isValid: true,
-      message: 'Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.'
-    },
-    isElementDuplicate: {
-      isValid: true,
-      message: 'Хэш-теги не могут дублироваться (регистр ввода не учитывается).'
-    }
-  };
 
-  if (textHashtagsInput.value) {
-    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
-    if (hashtags.length) {
-      for (var i = (hashtags.length - 1); i >= 0; i--) {
-        if (!hashtags[i]) {
-          hashtags.splice(i, 1);
-        }
-      }
-    }
-
-    if (hashtags.length) {
-      if (!isArrayLength(hashtags, hashtagsSpecification.maxHashtagsCount)) {
-        validitiesErrors.isHashtagsCount.isValid = false;
-      }
-
-      hashtags.forEach(function (element) {
-        if (!isMoreMinLength(element, hashtagsSpecification.minLength) && validitiesErrors.isMinLength.isValid) {
-          validitiesErrors.isMinLength.isValid = false;
-        }
-        if (!isLessMaxLength(element, hashtagsSpecification.maxLength) && validitiesErrors.isMaxLength.isValid) {
-          validitiesErrors.isMaxLength.isValid = false;
-        }
-        if (!isPattern(element, hashtagsSpecification.description) && validitiesErrors.isPatternValid.isValid) {
-          validitiesErrors.isPatternValid.isValid = false;
-        }
-      });
-
-      if (!hashtags.every(isArrayElementDuplicate)) {
-        validitiesErrors.isElementDuplicate.isValid = false;
-      }
+  for (var errorElement in errorsArray) {
+    if (!errorsArray[errorElement].isValid) {
+      errorsArray[errorElement].isValid = true;
     }
   }
 
-  for (var error in validitiesErrors) {
-    if (!validitiesErrors[error].isValid) {
+  switch (specification.name) {
+
+    //  Хэш-теги
+    case ValidationSpecificationName.HASHTAGS:
+      var hashtags = validationObject;
+      if (hashtags.length) {
+        if (!isArrayLength(hashtags, specification.maxHashtagsCount)) {
+          errorsArray.isHashtagsCount.isValid = false;
+        }
+
+        hashtags.forEach(function (element) {
+          if (!isMoreMinLength(element, specification.minLength) && errorsArray.isMinLength.isValid) {
+            errorsArray.isMinLength.isValid = false;
+          }
+          if (!isLessMaxLength(element, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+            errorsArray.isMaxLength.isValid = false;
+          }
+          if (!isPattern(element, specification.description) && errorsArray.isPatternValid.isValid) {
+            errorsArray.isPatternValid.isValid = false;
+          }
+        });
+
+        if (!hashtags.every(isArrayElementDuplicate)) {
+          errorsArray.isElementDuplicate.isValid = false;
+        }
+      }
+      break;
+
+    //  Поле ввода комментария (описания) формы редактирования изображения
+    case ValidationSpecificationName.DESCRIPTION:
+      var textDescription = validationObject;
+      if (textDescription) {
+        if (!isLessMaxLength(textDescription, specification.maxLength) && errorsArray.isMaxLength.isValid) {
+          errorsArray.isMaxLength.isValid = false;
+        }
+      }
+      break;
+
+    //  Загружаемый файл
+    case ValidationSpecificationName.UPLOAD_FILE:
+      var uploadFileInputValue = validationObject;
+      if (uploadFileInputValue) {
+        if (!isPattern(uploadFileInputValue, specification.pattern) && errorsArray.isPatternValid.isValid) {
+          errorsArray.isPatternValid.isValid = false;
+        }
+      }
+      break;
+
+    default:
+      throw new Error('Неизвестная спецификация поля.');
+  }
+
+  for (var error in errorsArray) {
+    if (!errorsArray[error].isValid) {
       isValidity = false;
-      validityMessage += validitiesErrors[error].message + ' \r\n ';
+      validityMessage += errorsArray[error].message + ' \r\n ';
     }
   }
-  textHashtagsInput.setCustomValidity(validityMessage);
 
-  return isValidity;
+  return {
+    resalt: isValidity,
+    message: validityMessage
+  };
 };
-
-/*  Валидация типа загружаемого файла  */
-var uploadFileTypeValidation = function () {
-  var isValidity = true;
-  var pattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
-
-  if (!isPattern(uploadFileInput.value.toLowerCase(), pattern)) {
-    isValidity = false;
-    uploadFileInput.setCustomValidity('Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg');
-  } else {
-    uploadFileInput.setCustomValidity('');
-  }
-
-  return isValidity;
-};
-
 
 var isArrayLength = function (array, maxLength) {
   return (array.length > maxLength) ? false : true;
@@ -538,4 +624,139 @@ var isPattern = function (str, pattern) {
 
 var isArrayElementDuplicate = function (element, index, array) {
   return !(array.includes(element, (index + 1)));
+};
+
+
+var onFormSubmit = function (evt) {
+  evt.preventDefault();
+  if (uploadFileValidation() && textHashtagsInputValidation() && textDescriptionInputValidation()) {
+    evt.target.submit();
+    closeImgUploadOverlay();
+  }
+};
+
+//  Валидация хеш-тегов
+var hashtagsSpecification = (function () {
+  var maxCount = 5;
+  var hashtagsSeparator = ' ';
+  var hashtagsMinLength = 2;
+  var hashtagsMaxLength = 20;
+  var hashtagsDescription = /(^#[A-Za-zА-Яа-я0-9]+$){1}/;
+
+  var hashtagsValiditiesErrors = {
+    isHashtagsCount: {
+      isValid: true,
+      message: 'Число хэш-тегов не должно быть больше ' + maxCount + '-ти.'
+    },
+    isMinLength: {
+      isValid: true,
+      message: 'Длина хэш-тега не должна быть меньше ' + hashtagsMinLength + '-х символов.'
+    },
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина хэш-тега не должна быть больше ' + hashtagsMaxLength + '-ти символов.'
+    },
+    isPatternValid: {
+      isValid: true,
+      message: 'Хэш-тег должен начинаться с "#" и содержать только буквы и цифры. \nХэш-теги разделяются пробелами.'
+    },
+    isElementDuplicate: {
+      isValid: true,
+      message: 'Хэш-теги не могут дублироваться (регистр ввода не учитывается).'
+    }
+  };
+
+  var specification = {
+    name: ValidationSpecificationName.HASHTAGS,
+    maxHashtagsCount: maxCount,
+    separator: hashtagsSeparator,
+    minLength: hashtagsMinLength,
+    maxLength: hashtagsMaxLength,
+    description: hashtagsDescription,
+    validitiesErrors: hashtagsValiditiesErrors
+  };
+  return specification;
+})();
+
+var textHashtagsInputValidation = function () {
+  var hashtags = [];
+
+  if (textHashtagsInput.value) {
+    hashtags = textHashtagsInput.value.toLowerCase().split(hashtagsSpecification.separator);
+    if (hashtags.length) {
+      for (var i = (hashtags.length - 1); i >= 0; i--) {
+        if (!hashtags[i]) {
+          hashtags.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  var validityResalt = getValidation(hashtagsSpecification, hashtags);
+  textHashtagsInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
+};
+
+var onTextHashtagsInput = function () {
+  textHashtagsInputValidation();
+};
+
+//  Валидация комментария (описания) для формы загрузки нового изображения
+var textDescriptionSpecification = (function () {
+  var textMinLength = textDescriptionInput.getAttribute('minlength');
+  var textMaxLength = textDescriptionInput.getAttribute('maxlength');
+
+  var textValiditiesErrors = {
+    isMaxLength: {
+      isValid: true,
+      message: 'Длина комментария не должна быть больше ' + textMaxLength + ' символов.'
+    }
+  };
+
+  var specification = {
+    name: ValidationSpecificationName.DESCRIPTION,
+    minLength: textMinLength,
+    maxLength: textMaxLength,
+    validitiesErrors: textValiditiesErrors
+  };
+  return specification;
+})();
+
+var textDescriptionInputValidation = function () {
+  var validityResalt = getValidation(textDescriptionSpecification, textDescriptionInput.value);
+  textDescriptionInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
+};
+
+var onTextDescriptionInput = function () {
+  textDescriptionInputValidation();
+};
+
+//  Валидация типа загружаемого файла
+var uploadFileSpecification = (function () {
+  var uploadFilePattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
+
+  var uploadFileValiditiesErrors = {
+    isPatternValid: {
+      isValid: true,
+      message: 'Выберите правильный формат файла для загрузки: .png, .jpg, .jpeg.'
+    }
+  };
+
+  var specification = {
+    name: ValidationSpecificationName.UPLOAD_FILE,
+    pattern: uploadFilePattern,
+    validitiesErrors: uploadFileValiditiesErrors
+  };
+  return specification;
+})();
+
+var uploadFileValidation = function () {
+  var validityResalt = getValidation(uploadFileSpecification, uploadFileInput.value.toLowerCase());
+  uploadFileInput.setCustomValidity(validityResalt.message);
+  return validityResalt.resalt;
+};
+
+var onUploadFileInputChange = function () {
+  uploadFileValidation();
 };
