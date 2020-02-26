@@ -2,161 +2,18 @@
 
 (function () {
   var body = document.querySelector('body');
-  var footer = document.querySelector('footer');
-
-  var imgFilters = document.querySelector('.img-filters');
-
   var pictures = document.querySelector('.pictures');
-  var bigPicture = document.querySelector('.big-picture');
-  var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
-  var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
-  var bigPictureDescription = bigPicture.querySelector('.social__caption');
-  var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
-  var bigPictureSocialComments = bigPicture.querySelector('.social__comments');
-  var bigPictureCancel = bigPicture.querySelector('#picture-cancel');
-
-  var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
-  var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
-
-  // var photoTemplate = document.querySelector('#picture').content;
-  var socialCommentTemplate = document.querySelector('#social-comment').content;
-
-
-  //  Объект контроля фокуса между окнами
-  var windowFocus = {
-    FOCUS_REMOVE_INDEX: '-1',
-    FOCUS_ADD_INDEX: '0',
-
-    focusOut: function (focusElement) {
-      this.changeFocus(this.FOCUS_REMOVE_INDEX);
-      this.currentElement = focusElement;
-    },
-
-    focusIn: function () {
-      windowFocus.changeFocus(this.FOCUS_ADD_INDEX);
-      windowFocus.replaceCurrentElement();
-    },
-
-    replaceCurrentElement: function () {
-      this.currentElement.focus();
-    },
-
-    changeFocus: function (tabindex) {
-      var tabIndexChange = function (elementsArray) {
-        for (var i = 0; i < elementsArray.length; i++) {
-          elementsArray[i].tabIndex = tabindex;
-        }
-      };
-
-      tabIndexChange(pictures.querySelectorAll('.picture'));
-      tabIndexChange(footer.querySelectorAll('a'));
-      tabIndexChange(imgFilters.querySelectorAll('button'));
-    }
-  };
-
-
-
-  /* //  Функция отрисовки всех фотографий
-  var renderPhotos = function (photosArray) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < photosArray.length; i++) {
-      fragment.appendChild(renderPhoto(photosArray[i]));
-    }
-    return fragment;
-  }; */
-
-
-  /*  Большая фотография  */
-
-  //  Функция отрисовки одного комментария
-  var renderSocialComment = function (comment) {
-    var commentElement = socialCommentTemplate.cloneNode(true);
-    commentElement.querySelector('.social__picture').src = comment.avatar;
-    commentElement.querySelector('.social__picture').alt = comment.name;
-    commentElement.querySelector('.social__text').textContent = comment.message;
-    return commentElement;
-  };
-
-  //  Функция отрисовки всех комментариев
-  var renderSocialComments = function (commentsArray) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < commentsArray.length; i++) {
-      fragment.appendChild(renderSocialComment(commentsArray[i]));
-    }
-    return fragment;
-  };
-
-  //  Функция отрисовки большой фотографии
-  var renderBigPhoto = function (bigPhoto) {
-    bigPictureImg.src = bigPhoto.url;
-    bigPictureImg.alt = bigPhoto.description;
-    bigPictureLikesCount.textContent = bigPhoto.likes;
-    bigPictureCommentsCount.textContent = bigPhoto.comments.length;
-    bigPictureDescription.textContent = bigPhoto.description;
-    bigPictureSocialComments.innerHTML = '';
-    bigPictureSocialComments.appendChild(renderSocialComments(bigPhoto.comments));
-  };
-
-  //  Функция нахождения объекта фотографии
-  var getPhotoObject = function (clickedPicture, photosArray) {
-    var picturesArray = pictures.querySelectorAll('.picture');
-    var index = Array.prototype.indexOf.call(picturesArray, clickedPicture);
-    var photoObj = (index >= 0) ? photosArray[index] : '';
-    return photoObj;
-  };
-
-  //  mountedBigPicture() - всё добавляет
-  var mountedBigPicture = function () {
-    bigPictureCancel.addEventListener('click', onBigPictureCancelClick);
-    document.addEventListener('keydown', onBigPictureEscPress);
-  };
-
-  //  destroyedBigPicture() - всё удаляет
-  var destroyedBigPicture = function () {
-    document.removeEventListener('keydown', onBigPictureEscPress);
-  };
-
-  var closeBigPicture = function () {
-    body.classList.remove('modal-open');
-    bigPicture.classList.add('hidden');
-    destroyedBigPicture();
-    windowFocus.focusIn();
-  };
-
-  var onBigPictureCancelClick = function () {
-    closeBigPicture();
-  };
-
-  var onBigPictureEscPress = function (evt) {
-    onPopupEscPress(evt, evt.target, closeBigPicture);
-  };
-
-  // var onSmallPictureClick = function (clickedPicture) {
-  var openBigPicture = function (clickedPicture) {
-    var photoObject = getPhotoObject(clickedPicture, photos);
-    if (photoObject) {
-      renderBigPhoto(photoObject);
-      body.classList.add('modal-open');
-      bigPicture.classList.remove('hidden');
-      mountedBigPicture();
-      windowFocus.focusOut(clickedPicture);
-
-      bigPictureSocialCommentCount.classList.add('hidden');
-      bigPictureCommentsLoader.classList.add('hidden');
-    }
-  };
-
 
   var photos = window.data;
   pictures.appendChild(window.preview(photos));
 
   var onPicturesClick = function (evt) {
-    openBigPicture(evt.target.parentNode);
+    window.picture(evt.target.parentNode, photos);
   };
 
   var onPituresKeydown = function (evt) {
     window.util.isEnterEvent(evt, function () {
-      openBigPicture(evt.target);
+      window.picture(evt.target, photos);
     });
   };
 
@@ -171,15 +28,8 @@
   var imgUploadOverlay = imgUpload.querySelector('.img-upload__overlay'); //  Форма редактирования изображения
   var uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
 
-  //  Функция закрытия попапа по нажатию на ESC
+  /* //  Функция закрытия попапа по нажатию на ESC
   var onPopupEscPress = function (evt, target, closePopup) {
-    /* if (evt.key === ESC_KEY) {
-      if (((target.tagName === 'INPUT') && (target.type === 'text')) || (target.tagName === 'TEXTAREA')) {
-        target.blur();
-      } else {
-        closePopup();
-      }
-    } */
     window.util.isEscEvent(evt, function () {
       if (((target.tagName === 'INPUT') && (target.type === 'text')) || (target.tagName === 'TEXTAREA')) {
         target.blur();
@@ -187,7 +37,7 @@
         closePopup();
       }
     });
-  };
+  }; */
 
   //  mountedImgUploadOverlay() - всё добавляет
   var mountedImgUploadOverlay = function () {
@@ -230,7 +80,7 @@
     imgUploadOverlay.classList.add('hidden');
     resetImgUploadOverlay();
     destroyedImgUploadOverlay();
-    windowFocus.focusIn();
+    //window.windowFocus.focusIn();
   };
 
   var onUploadCancelClick = function () {
@@ -238,14 +88,14 @@
   };
 
   var onImgUploadOverlayEscPress = function (evt) {
-    onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
+    window.util.onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
   };
 
   var openImgUploadOverlay = function () {
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
-    windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
+    //window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
     resetEffect();
   };
 

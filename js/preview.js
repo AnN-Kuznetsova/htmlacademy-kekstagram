@@ -11,7 +11,6 @@
     return photoElement;
   };
 
-  //  Функция отрисовки всех фотографий
   var renderGallery = function (photosArray) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < photosArray.length; i++) {

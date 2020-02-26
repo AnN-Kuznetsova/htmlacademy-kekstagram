@@ -16,8 +16,20 @@
     }
   };
 
+  //  Функция закрытия попапа по нажатию на ESC
+  var onPopupEscPress = function (evt, target, closePopup) {
+    window.util.isEscEvent(evt, function () {
+      if (((target.tagName === 'INPUT') && (target.type === 'text')) || (target.tagName === 'TEXTAREA')) {
+        target.blur();
+      } else {
+        closePopup();
+      }
+    });
+  };
+
   window.util = {
     isEscEvent: onEscPress,
-    isEnterEvent: onEnterPress
+    isEnterEvent: onEnterPress,
+    onPopupEscPress: onPopupEscPress
   };
 })();
