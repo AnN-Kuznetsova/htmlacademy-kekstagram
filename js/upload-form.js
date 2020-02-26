@@ -9,6 +9,13 @@
   var imgUploadOverlay = imgUpload.querySelector('.img-upload__overlay'); //  Форма редактирования изображения
   var uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
 
+  var scaleControlSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
+  var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
+  var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
+  var effectLevel = imgUploadOverlay.querySelector('.effect-level');
+  var effectLevelLine = effectLevel.querySelector('.effect-level__line');
+  var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
+
   //  mountedImgUploadOverlay() - всё добавляет
   var mountedImgUploadOverlay = function () {
     uploadCancel.addEventListener('click', onUploadCancelClick);
@@ -19,7 +26,7 @@
 
     for (var i = 0; i < effectsRradioButtons.length; i++) {
       effectsRradioButtons[i].addEventListener('change', function (evt) {
-        setEffect(evt);
+        window.effect.set(evt);
       });
     }
 
@@ -39,8 +46,8 @@
   //  Сброс параметров окна редактирования изображени в начальные установки
   var resetImgUploadOverlay = function () {
     uploadFileInput.value = '';
-    renderScale(DEFAULT_SCALE);
-    resetEffect();
+    window.scale.render(window.parameters.scale.DEFAULT);
+    window.effect.reset();
     textHashtagsInput.value = '';
     textHashtagsInputValidation();
   };
@@ -66,52 +73,29 @@
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
     //window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
-    resetEffect();
+    window.effect.reset();
   };
 
-
-  /*  Изменение размера изображения  */
-
-  var MIN_SCALE = 25;
-  var MAX_SCALE = 100;
-  var SCALE_STEP = 25;
-  var DEFAULT_SCALE = 100;
-
-  var scaleControlSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
-  var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
-  var scaleControlValue = imgUploadOverlay.querySelector('.scale__control--value');
-  var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
-
-  var getScaleValue = function () {
-    return parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
-  };
-
-  var renderScale = function (scale) {
-    scaleControlValue.value = scale + '%';
-    scale = (scale / 100);
-    imgUploadPreview.style.transform = 'scale(' + scale + ')';
-  };
 
   var onScaleControlSmallerClick = function () {
-    var scaleValue = getScaleValue();
-    if (scaleValue > MIN_SCALE) {
-      scaleValue -= SCALE_STEP;
-    }
-    renderScale(scaleValue);
+    window.scale.decrease();
   };
 
   var onScaleControlBiggerClick = function () {
-    var scaleValue = getScaleValue();
-    if (scaleValue < MAX_SCALE) {
-      scaleValue += SCALE_STEP;
-    }
-    renderScale(scaleValue);
+    window.scale.increase();
+  };
+
+  var onSliderPinMouseDown = function (evt) {
+    window.slider.onPinMouseDown(evt);
+  };
+
+  var onEffectLevelLineClick = function (evt) {
+    window.slider.onLineClick(evt);
   };
 
 
   /*  Наложение эффекта на изображение  */
-
-  var effectLevel = imgUploadOverlay.querySelector('.effect-level');
+  /* var effectLevel = imgUploadOverlay.querySelector('.effect-level');
   var effectLevelLine = effectLevel.querySelector('.effect-level__line');
   var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
   var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
@@ -199,12 +183,11 @@
     removeEffect();
     addEffect(evt.target.id);
     initSlider();
-  };
+  }; */
 
 
   /*  Слайдер  */
-
-  var onSliderPinMouseDown = function (evt) {
+  /* var onSliderPinMouseDown = function (evt) {
     var line = effectLevelLine.getBoundingClientRect();
     var evtXStart = evt.clientX;
 
@@ -280,7 +263,7 @@
       renderSlider(calculatePinOffset(effectLevelLine, filterEffect.value), filterEffect.value);
     }
     renderEffect(filterEffect.name, filterEffect.value);
-  };
+  }; */
 
 
   /*  Валидация формы загрузки нового изображения  */
