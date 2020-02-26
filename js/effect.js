@@ -1,9 +1,11 @@
 'use strict';
 
 (function () {
-  var DEFAULT_EFFECT_NAME = 'effect-none'; // 'effects__preview--none';
-  var DEFAULT_EFFECT_VALUE = 100; // effectLevelValueInput.value;
-  var NONE_EFFECT_NAME = 'effect-none';
+  var DEFAULT_EFFECT_NAME = window.parameters.effect.DEFAULT_NAME;
+  var DEFAULT_EFFECT_VALUE = window.parameters.effect.DEFAULT_VALUE;
+  var NONE_EFFECT_NAME = window.parameters.effect.NONE_NAME;
+
+  var filters = window.parameters.filters;
 
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
   var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
@@ -14,45 +16,6 @@
   var effectLevelDepth = effectLevel.querySelector('.effect-level__depth');
   var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
 
-  var filters = {
-    'effect-none': {
-      className: 'effects__preview--none',
-      lawСreation: function (effectValue) {
-        effectValue = '';
-        return effectValue;
-      }
-    },
-    'effect-chrome': {
-      className: 'effects__preview--chrome',
-      lawСreation: function (effectValue) {
-        return 'grayscale(' + (effectValue / 100) + ')';
-      }
-    },
-    'effect-sepia': {
-      className: 'effects__preview--sepia',
-      lawСreation: function (effectValue) {
-        return 'sepia(' + (effectValue / 100) + ')';
-      }
-    },
-    'effect-marvin': {
-      className: 'effects__preview--marvin',
-      lawСreation: function (effectValue) {
-        return 'invert(' + effectValue + '%)';
-      }
-    },
-    'effect-phobos': {
-      className: 'effects__preview--phobos',
-      lawСreation: function (effectValue) {
-        return 'blur(' + (effectValue * 3 / 100) + 'px)';
-      }
-    },
-    'effect-heat': {
-      className: 'effects__preview--heat',
-      lawСreation: function (effectValue) {
-        return 'brightness(' + (effectValue * 2 / 100 + 1) + ')';
-      }
-    }
-  };
 
   var filterEffect = (function () {
     var effectObject = {};
