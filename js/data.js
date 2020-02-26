@@ -25,10 +25,11 @@
   var commentsCreate = function (commentsCount) {
     var commentsArray = [];
     for (var i = 0; i < commentsCount; i++) {
-      commentsArray[i] = {};
-      commentsArray[i].avatar = 'img/avatar-' + (window.random.number(5) + 1) + '.svg';
-      commentsArray[i].message = window.random.arrayElement(COMMENTS_TEXTS);
-      commentsArray[i].name = window.random.arrayElement(AUTHORS_NAMES);
+      commentsArray.push({
+        avatar: 'img/avatar-' + (window.random.number(5) + 1) + '.svg',
+        message: window.random.arrayElement(COMMENTS_TEXTS),
+        name: window.random.arrayElement(AUTHORS_NAMES)
+      });
     }
     return commentsArray;
   };
@@ -37,11 +38,12 @@
   var photosCreate = function (photosCount) {
     var photosArray = [];
     for (var i = 0; i < photosCount; i++) {
-      photosArray[i] = {};
-      photosArray[i].url = 'photos/' + (i + 1) + '.jpg';
-      photosArray[i].description = window.random.arrayElement(DESCRIPTIONS);
-      photosArray[i].likes = window.random.number(MAX_LIKES - MIN_LIKES) + MIN_LIKES;
-      photosArray[i].comments = commentsCreate(window.random.number(MAX_COMMENTS));
+      photosArray.push({
+        url: 'photos/' + (i + 1) + '.jpg',
+        description: window.random.arrayElement(DESCRIPTIONS),
+        likes: window.random.number(MAX_LIKES - MIN_LIKES) + MIN_LIKES,
+        comments: commentsCreate(window.random.number(MAX_COMMENTS))
+      });
     }
     return photosArray;
   };
