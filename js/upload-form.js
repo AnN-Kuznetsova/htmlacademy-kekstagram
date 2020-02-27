@@ -52,6 +52,8 @@
     window.effect.reset();
     textHashtagsInput.value = '';
     window.validation.hashtags(textHashtagsInput);
+    textDescriptionInput.value = '';
+    window.validation.description(textDescriptionInput);
   };
 
   var closeImgUploadOverlay = function () {
