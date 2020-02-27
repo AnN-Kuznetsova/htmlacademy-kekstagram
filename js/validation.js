@@ -82,6 +82,13 @@
     };
   };
 
+  var setValidityResalt = function (specification, validationValue, validationField) {
+    var validityResalt = getValidation(specification, validationValue);
+    validationField.setCustomValidity(validityResalt.message);
+    return validityResalt.resalt;
+  };
+
+
   var isArrayLength = function (array, maxLength) {
     return (array.length > maxLength) ? false : true;
   };
@@ -118,23 +125,17 @@
       }
     }
 
-    var validityResalt = getValidation(hashtagsSpecification, hashtags);
-    textInput.setCustomValidity(validityResalt.message);
-    return validityResalt.resalt;
+    return setValidityResalt(hashtagsSpecification, hashtags, textInput);
   };
 
   //  Валидация комментария (описания) для формы загрузки нового изображения
   var textDescriptionInputValidation = function (textInput) {
-    var validityResalt = getValidation(textDescriptionSpecification, textInput.value);
-    textInput.setCustomValidity(validityResalt.message);
-    return validityResalt.resalt;
+    return setValidityResalt(textDescriptionSpecification, textInput.value, textInput);
   };
 
   //  Валидация типа загружаемого файла
   var uploadFileValidation = function (uploadFileInput) {
-    var validityResalt = getValidation(uploadFileSpecification, uploadFileInput.value.toLowerCase());
-    uploadFileInput.setCustomValidity(validityResalt.message);
-    return validityResalt.resalt;
+    return setValidityResalt(uploadFileSpecification, uploadFileInput.value.toLowerCase(), uploadFileInput);
   };
 
 
