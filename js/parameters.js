@@ -54,9 +54,18 @@
     }
   };
 
+  var filterEffectObject = (function () {
+    var effectObject = {};
+    effectObject.name = Effect.DEFAULT_NAME;
+    effectObject.value = Effect.DEFAULT_VALUE;
+    effectObject.class = filters[effectObject.name].className;
+    return effectObject;
+  })();
+
   window.parameters = {
     scale: Scale,
     effect: Effect,
-    filters: filters
+    filters: filters,
+    filterEffectObject: filterEffectObject
   };
 })();
