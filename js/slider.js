@@ -79,7 +79,7 @@
   };
 
   var renderEffect = function (effectName, effectValue) {
-    imgUploadPreview.style.filter = filters[effectName].lawСreation(effectValue);
+    imgUploadPreview.style.filter = filters[effectName](effectValue);
   };
 
   var initSlider = function () {

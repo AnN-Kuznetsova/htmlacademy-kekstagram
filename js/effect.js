@@ -10,7 +10,6 @@
   var effectLevel = imgUploadOverlay.querySelector('.effect-level');
   var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
 
-  var filters = window.parameters.filters;
   var filterEffect = window.parameters.filterEffectObject;
 
   var removeEffect = function () {
@@ -21,7 +20,7 @@
 
   var addEffect = function (effectName) {
     filterEffect.name = effectName;
-    filterEffect.class = filters[effectName].className;
+    filterEffect.class = filterEffect.createClass(effectName);
     filterEffect.value = DEFAULT_EFFECT_VALUE;
     effectLevelValueInput.value = filterEffect.value;
     imgUploadPreview.classList.add(filterEffect.class);
@@ -30,9 +29,9 @@
   var resetEffect = function () {
     removeEffect();
     for (var i = 0; i < effectsRradioButtons.length; i++) {
-      if (effectsRradioButtons[i].id === DEFAULT_EFFECT_NAME) {
+      if (effectsRradioButtons[i].value === DEFAULT_EFFECT_NAME) {
         effectsRradioButtons[i].checked = true;
-        addEffect(effectsRradioButtons[i].id);
+        addEffect(effectsRradioButtons[i].value);
       }
     }
     window.slider.init();
@@ -40,7 +39,7 @@
 
   var setEffect = function (evt) {
     removeEffect();
-    addEffect(evt.target.id);
+    addEffect(evt.target.value);
     window.slider.init();
   };
 
