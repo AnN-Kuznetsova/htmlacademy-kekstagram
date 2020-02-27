@@ -6,6 +6,13 @@
   var hashtagsSpecification = window.specifications.hashtags;
   var textDescriptionSpecification = window.specifications.description;
 
+  var validationFunctions = window.validationFunctions;
+  var isArrayLength = validationFunctions.isArrayLength;
+  var isMoreMinLength = validationFunctions.isMoreMinLength;
+  var isLessMaxLength = validationFunctions.isLessMaxLength;
+  var isPattern = validationFunctions.isPattern;
+  var isArrayElementDuplicate = validationFunctions.isArrayElementDuplicate;
+
   var getValidation = function (specification, validationObject) {
     var errorsArray = specification.validitiesErrors;
     var isValidity = true;
@@ -86,27 +93,6 @@
     var validityResalt = getValidation(specification, validationValue);
     validationField.setCustomValidity(validityResalt.message);
     return validityResalt.resalt;
-  };
-
-
-  var isArrayLength = function (array, maxLength) {
-    return (array.length > maxLength) ? false : true;
-  };
-
-  var isMoreMinLength = function (str, minLength) {
-    return (str.length >= minLength);
-  };
-
-  var isLessMaxLength = function (str, maxLength) {
-    return (str.length <= maxLength);
-  };
-
-  var isPattern = function (str, pattern) {
-    return RegExp(pattern).test(str);
-  };
-
-  var isArrayElementDuplicate = function (element, index, array) {
-    return !(array.includes(element, (index + 1)));
   };
 
 
