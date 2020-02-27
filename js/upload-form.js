@@ -61,7 +61,7 @@
     imgUploadOverlay.classList.add('hidden');
     resetImgUploadOverlay();
     destroyedImgUploadOverlay();
-    //window.windowFocus.focusIn();
+    window.windowFocus.focusIn();
   };
 
   var onUploadCancelClick = function () {
@@ -76,7 +76,7 @@
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
-    //window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
+    window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
     window.effect.reset();
   };
 

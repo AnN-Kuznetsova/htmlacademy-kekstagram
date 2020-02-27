@@ -32,7 +32,7 @@
     body.classList.remove('modal-open');
     bigPicture.classList.add('hidden');
     destroyedBigPicture();
-    //window.windowFocus.focusIn();
+    window.windowFocus.focusIn();
   };
 
   var onBigPictureCancelClick = function () {
@@ -50,7 +50,7 @@
       body.classList.add('modal-open');
       bigPicture.classList.remove('hidden');
       mountedBigPicture();
-      //window.windowFocus.focusOut(clickedPicture);
+      window.windowFocus.focusOut(clickedPicture);
 
       bigPictureSocialCommentCount.classList.add('hidden');
       bigPictureCommentsLoader.classList.add('hidden');
