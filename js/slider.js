@@ -64,37 +64,23 @@
 
   // сдайдер Keydown
   var onSliderPinKeydown = function (evt) {
-    var line = effectLevelLine.getBoundingClientRect();
-    var pinOffsetLeft;
-    var shiftX;
-
     window.util.isArrowLeftEvent(evt, function () {
-      shiftX = SLIDER_STEP;
+      changeSlider(SLIDER_STEP);
     });
     window.util.isArrowRightEvent(evt, function () {
-      shiftX = -SLIDER_STEP;
+      changeSlider(-SLIDER_STEP);
     });
-
-    if ((effectLevelPin.offsetLeft - shiftX) < 0) {
-      pinOffsetLeft = 0;
-    } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
-      pinOffsetLeft = line.width;
-    } else {
-      pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
-    }
-
-    renderSlider(pinOffsetLeft, filterEffect.value);
-    filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
-    effectLevelValueInput.value = filterEffect.value;
-    renderEffect(filterEffect.name, filterEffect.value);
-    renderSlider(pinOffsetLeft, filterEffect.value);
   };
 
   // слайдер Click
   var onSliderLineClick = function (evt) {
+    changeSlider(effectLevelPin.offsetLeft - (evt.clientX - effectLevelLine.getBoundingClientRect().x));
+  };
+
+
+  var changeSlider = function (shiftX) {
     var line = effectLevelLine.getBoundingClientRect();
     var pinOffsetLeft;
-    var shiftX = (effectLevelPin.offsetLeft - (evt.clientX - line.x));
 
     switch (true) {
       case ((effectLevelPin.offsetLeft - shiftX) < 0):
