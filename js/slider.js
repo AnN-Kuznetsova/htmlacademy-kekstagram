@@ -15,45 +15,30 @@
   var filters = window.parameters.filters;
   var filterEffect = window.parameters.filterEffectObject;
 
-  /* var line = effectLevelLine.getBoundingClientRect();
-  var pin = effectLevelPin.getBoundingClientRect();
-  var effectLevelLineX = effectLevelLine.getBoundingClientRect().x;
-  var effectLevelLineLegth = effectLevelLine.getBoundingClientRect().width;
-  var pinOffsetLeft; */
-
 
   // слайдер MouseDown
   var onSliderPinMouseDown = function (evt) {
     var line = effectLevelLine.getBoundingClientRect();
     var evtXStart = evt.clientX;
 
+
     var onSliderPinMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      var pinOffsetLeft;
       var shiftX = (evtXStart - moveEvt.clientX);
       evtXStart = moveEvt.clientX;
 
       if ((effectLevelPin.offsetLeft - shiftX) < 0) {
-        pinOffsetLeft = 0;
         evtXStart = line.x;
       } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
-        pinOffsetLeft = line.width;
         evtXStart = line.x + line.width;
-      } else {
-        pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
       }
 
-      filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
-      renderSlider(pinOffsetLeft, filterEffect.value);
-      renderEffect(filterEffect.name, filterEffect.value);
+      changeSlider(shiftX, evtXStart);
     };
 
     var onSliderPinMouseUp = function (upEvt) {
       upEvt.preventDefault();
-
-      effectLevelValueInput.value = filterEffect.value;
-
       document.removeEventListener('mousemove', onSliderPinMouseMove);
       document.removeEventListener('mouseup', onSliderPinMouseUp);
     };
@@ -78,16 +63,22 @@
   };
 
 
-  var changeSlider = function (shiftX) {
+  var changeSlider = function (shiftX, evtXStart) {
     var line = effectLevelLine.getBoundingClientRect();
     var pinOffsetLeft;
 
     switch (true) {
       case ((effectLevelPin.offsetLeft - shiftX) < 0):
         pinOffsetLeft = 0;
+        /* if (evtXStart) {
+          evtXStart = line.x;
+        } */
         break;
       case ((effectLevelPin.offsetLeft - shiftX) > line.width):
         pinOffsetLeft = line.width;
+        /* if (evtXStart) {
+          evtXStart = line.x + line.width;
+        } */
         break;
       default:
         pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
@@ -99,8 +90,6 @@
     renderEffect(filterEffect.name, filterEffect.value);
     renderSlider(pinOffsetLeft, filterEffect.value);
   };
-
-
 
   var calculateEffectValue = function (sliderLine, sliderPin) {
     var line = sliderLine.getBoundingClientRect();

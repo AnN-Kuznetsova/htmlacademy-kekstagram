@@ -99,7 +99,6 @@
 
   var onSliderPinKeydown = function (evt) {
     window.slider.onPinKeydown(evt);
-    //window.util.is
   };
 
   var onEffectLevelLineClick = function (evt) {
