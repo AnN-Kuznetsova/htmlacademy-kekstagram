@@ -5,7 +5,9 @@
     ESC: 'Escape',
     ENTER: 'Enter',
     ARROW_RIGHT: 'ArrowRight',
-    ARROW_LEFT: 'ArrowLeft'
+    ARROW_LEFT: 'ArrowLeft',
+    ARROW_UP: 'ArrowUp',
+    ARROW_DOWN: 'ArrowDown'
   };
 
   var onEscPress = function (evt, action) {
@@ -32,6 +34,18 @@
     }
   };
 
+  var onArrowUpPress = function (evt, action) {
+    if (evt.key === Key.ARROW_UP) {
+      action();
+    }
+  };
+
+  var onArrowDownPress = function (evt, action) {
+    if (evt.key === Key.ARROW_DOWN) {
+      action();
+    }
+  };
+
   //  Функция закрытия попапа по нажатию на ESC
   var onPopupEscPress = function (evt, target, closePopup) {
     window.util.isEscEvent(evt, function () {
@@ -48,6 +62,8 @@
     isEnterEvent: onEnterPress,
     isArrowRightEvent: onArrowRightPress,
     isArrowLeftEvent: onArrowLeftPress,
+    isArrowUpEvent: onArrowUpPress,
+    isArrowDownEvent: onArrowDownPress,
     onPopupEscPress: onPopupEscPress
   };
 })();

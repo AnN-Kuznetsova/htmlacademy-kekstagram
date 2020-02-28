@@ -51,7 +51,13 @@
     window.util.isArrowLeftEvent(evt, function () {
       changeSlider(SLIDER_STEP);
     });
+    window.util.isArrowDownEvent(evt, function () {
+      changeSlider(SLIDER_STEP);
+    });
     window.util.isArrowRightEvent(evt, function () {
+      changeSlider(-SLIDER_STEP);
+    });
+    window.util.isArrowUpEvent(evt, function () {
       changeSlider(-SLIDER_STEP);
     });
   };
