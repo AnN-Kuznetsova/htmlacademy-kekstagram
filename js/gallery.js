@@ -11,14 +11,14 @@
     window.picture(evt.target.parentNode, photos);
   };
 
-  var onPituresKeydown = function (evt) {
+  var onPicturesKeydown = function (evt) {
     window.util.isEnterEvent(evt, function () {
       window.picture(evt.target, photos);
     });
   };
 
   pictures.addEventListener('click', onPicturesClick);
-  pictures.addEventListener('keydown', onPituresKeydown);
+  pictures.addEventListener('keydown', onPicturesKeydown);
 
   uploadFileInput.addEventListener('change', function () {
     window.uploadForm();

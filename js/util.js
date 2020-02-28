@@ -1,17 +1,33 @@
 'use strict';
 
 (function () {
-  var ESC_KEY = 'Escape';
-  var ENTER_KEY = 'Enter';
+  var Key = {
+    ESC: 'Escape',
+    ENTER: 'Enter',
+    ARROW_RIGHT: 'ArrowRight',
+    ARROW_LEFT: 'ArrowLeft'
+  };
 
   var onEscPress = function (evt, action) {
-    if (evt.key === ESC_KEY) {
+    if (evt.key === Key.ESC) {
       action();
     }
   };
 
   var onEnterPress = function (evt, action) {
-    if (evt.key === ENTER_KEY) {
+    if (evt.key === Key.ENTER) {
+      action();
+    }
+  };
+
+  var onArrowRightPress = function (evt, action) {
+    if (evt.key === Key.ARROW_RIGHT) {
+      action();
+    }
+  };
+
+  var onArrowLeftPress = function (evt, action) {
+    if (evt.key === Key.ARROW_LEFT) {
       action();
     }
   };
@@ -30,6 +46,8 @@
   window.util = {
     isEscEvent: onEscPress,
     isEnterEvent: onEnterPress,
+    isArrowRightEvent: onArrowRightPress,
+    isArrowLeftEvent: onArrowLeftPress,
     onPopupEscPress: onPopupEscPress
   };
 })();

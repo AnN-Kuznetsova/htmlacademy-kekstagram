@@ -2,6 +2,7 @@
 
 (function () {
   var NONE_EFFECT_NAME = window.parameters.effect.NONE_NAME;
+  var SLIDER_STEP = 10;
 
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
   var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
@@ -14,6 +15,14 @@
   var filters = window.parameters.filters;
   var filterEffect = window.parameters.filterEffectObject;
 
+  /* var line = effectLevelLine.getBoundingClientRect();
+  var pin = effectLevelPin.getBoundingClientRect();
+  var effectLevelLineX = effectLevelLine.getBoundingClientRect().x;
+  var effectLevelLineLegth = effectLevelLine.getBoundingClientRect().width;
+  var pinOffsetLeft; */
+
+
+  // слайдер MouseDown
   var onSliderPinMouseDown = function (evt) {
     var line = effectLevelLine.getBoundingClientRect();
     var evtXStart = evt.clientX;
@@ -53,6 +62,56 @@
     document.addEventListener('mouseup', onSliderPinMouseUp);
   };
 
+  // сдайдер Keydown
+  var onSliderPinKeydown = function (evt) {
+    var effectLevelLineX = effectLevelLine.getBoundingClientRect().x;
+    var effectLevelLineLegth = effectLevelLine.getBoundingClientRect().width;
+    var pinOffsetLeft;
+
+    var effectLevelPinX = ((effectLevelPin.getBoundingClientRect().x + effectLevelPin.getBoundingClientRect().width) / 2);
+
+    var line = effectLevelLine.getBoundingClientRect();
+    var shiftX;
+
+    window.util.isArrowLeftEvent(evt, function () {
+      /* switch (true) {
+        case ((effectLevelPinX - SLIDER_STEP) < effectLevelLineX):
+          pinOffsetLeft = 0;
+          break;
+        default:
+          pinOffsetLeft = effectLevelPin.offsetLeft - SLIDER_STEP;
+      } */
+      shiftX = SLIDER_STEP;
+    });
+    window.util.isArrowRightEvent(evt, function () {
+      /* switch (true) {
+        case ((effectLevelPinX + SLIDER_STEP) > (effectLevelLineX + effectLevelLineLegth)):
+          pinOffsetLeft = effectLevelLineLegth;
+          break;
+        default:
+          pinOffsetLeft = effectLevelPin.offsetLeft + SLIDER_STEP;
+      } */
+      shiftX = -SLIDER_STEP;
+    });
+
+    if ((effectLevelPin.offsetLeft - shiftX) < 0) {
+      pinOffsetLeft = 0;
+      // evtXStart = line.x;
+    } else if ((effectLevelPin.offsetLeft - shiftX) > line.width) {
+      pinOffsetLeft = line.width;
+      // evtXStart = line.x + line.width;
+    } else {
+      pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
+    }
+
+    renderSlider(pinOffsetLeft, filterEffect.value);
+    filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
+    effectLevelValueInput.value = filterEffect.value;
+    renderEffect(filterEffect.name, filterEffect.value);
+    renderSlider(pinOffsetLeft, filterEffect.value);
+  };
+
+  // слайдер Click
   var onSliderLineClick = function (evt) {
     var effectLevelLineX = effectLevelLine.getBoundingClientRect().x;
     var effectLevelLineLegth = effectLevelLine.getBoundingClientRect().width;
@@ -74,6 +133,8 @@
     renderEffect(filterEffect.name, filterEffect.value);
     renderSlider(pinOffsetLeft, filterEffect.value);
   };
+
+
 
   var calculateEffectValue = function (sliderLine, sliderPin) {
     var line = sliderLine.getBoundingClientRect();
@@ -107,6 +168,7 @@
 
   window.slider = {
     onPinMouseDown: onSliderPinMouseDown,
+    onPinKeydown: onSliderPinKeydown,
     onLineClick: onSliderLineClick,
     init: initSlider
   };

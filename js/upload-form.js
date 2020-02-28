@@ -32,6 +32,7 @@
     }
 
     effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
+    effectLevelPin.addEventListener('keydown', onSliderPinKeydown);
     effectLevel.addEventListener('click', onEffectLevelLineClick);
     imgUploadForm.addEventListener('submit', onFormSubmit);
     textHashtagsInput.addEventListener('input', onTextHashtagsInput);
@@ -94,6 +95,11 @@
 
   var onSliderPinMouseDown = function (evt) {
     window.slider.onPinMouseDown(evt);
+  };
+
+  var onSliderPinKeydown = function (evt) {
+    window.slider.onPinKeydown(evt);
+    //window.util.is
   };
 
   var onEffectLevelLineClick = function (evt) {
