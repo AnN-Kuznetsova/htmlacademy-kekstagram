@@ -1,40 +1,42 @@
 'use strict';
 
 (function () {
+  var focusIndex = window.parameters.focusIndex;
+
   var pictures = document.querySelector('.pictures');
   var footer = document.querySelector('footer');
   var imgFilters = document.querySelector('.img-filters');
 
-  var windowFocus = {
-    FOCUS_REMOVE_INDEX: '-1',
-    FOCUS_ADD_INDEX: '0',
+  var currentElement;
 
-    focusOut: function (focusElement) {
-      this.changeFocus(this.FOCUS_REMOVE_INDEX);
-      this.currentElement = focusElement;
-    },
-
-    focusIn: function () {
-      windowFocus.changeFocus(this.FOCUS_ADD_INDEX);
-      windowFocus.replaceCurrentElement();
-    },
-
-    replaceCurrentElement: function () {
-      this.currentElement.focus();
-    },
-
-    changeFocus: function (tabindex) {
-      var tabIndexChange = function (elementsArray) {
-        for (var i = 0; i < elementsArray.length; i++) {
-          elementsArray[i].tabIndex = tabindex;
-        }
-      };
-
-      tabIndexChange(pictures.querySelectorAll('.picture'));
-      tabIndexChange(footer.querySelectorAll('a'));
-      tabIndexChange(imgFilters.querySelectorAll('button'));
-    }
+  var focusOut = function (focusElement) {
+    changeFocus(focusIndex.REMOVE);
+    currentElement = focusElement;
   };
 
-  window.windowFocus = windowFocus;
+  var focusIn = function () {
+    changeFocus(focusIndex.ADD);
+    replaceCurrentElement();
+  };
+
+  var replaceCurrentElement = function () {
+    currentElement.focus();
+  };
+
+  var changeFocus = function (tabindex) {
+    var tabIndexChange = function (elementsArray) {
+      for (var i = 0; i < elementsArray.length; i++) {
+        elementsArray[i].tabIndex = tabindex;
+      }
+    };
+
+    tabIndexChange(pictures.querySelectorAll('.picture'));
+    tabIndexChange(footer.querySelectorAll('a'));
+    tabIndexChange(imgFilters.querySelectorAll('button'));
+  };
+
+  window.windowFocus = {
+    focusOut: focusOut,
+    focusIn: focusIn
+  };
 })();
