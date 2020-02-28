@@ -21,7 +21,6 @@
     var line = effectLevelLine.getBoundingClientRect();
     var evtXStart = evt.clientX;
 
-
     var onSliderPinMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
@@ -63,32 +62,26 @@
   };
 
 
-  var changeSlider = function (shiftX, evtXStart) {
+  var changeSlider = function (shiftX) {
     var line = effectLevelLine.getBoundingClientRect();
     var pinOffsetLeft;
 
     switch (true) {
       case ((effectLevelPin.offsetLeft - shiftX) < 0):
         pinOffsetLeft = 0;
-        /* if (evtXStart) {
-          evtXStart = line.x;
-        } */
         break;
       case ((effectLevelPin.offsetLeft - shiftX) > line.width):
         pinOffsetLeft = line.width;
-        /* if (evtXStart) {
-          evtXStart = line.x + line.width;
-        } */
         break;
       default:
         pinOffsetLeft = effectLevelPin.offsetLeft - shiftX;
     }
 
-    renderSlider(pinOffsetLeft, filterEffect.value);
+    renderSliderPin(pinOffsetLeft);
     filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
     effectLevelValueInput.value = filterEffect.value;
     renderEffect(filterEffect.name, filterEffect.value);
-    renderSlider(pinOffsetLeft, filterEffect.value);
+    renderSliderDepth(filterEffect.value);
   };
 
   var calculateEffectValue = function (sliderLine, sliderPin) {
@@ -102,8 +95,11 @@
     return (line.width * effectValue / 100);
   };
 
-  var renderSlider = function (pinOffset, effectValue) {
+  var renderSliderDepth = function (effectValue) {
     effectLevelDepth.style.width = effectValue + '%';
+  };
+
+  var renderSliderPin = function (pinOffset) {
     effectLevelPin.style.left = pinOffset + 'px';
   };
 
@@ -116,7 +112,8 @@
       effectLevel.classList.add('hidden');
     } else {
       effectLevel.classList.remove('hidden');
-      renderSlider(calculatePinOffset(effectLevelLine, filterEffect.value), filterEffect.value);
+      renderSliderPin(calculatePinOffset(effectLevelLine, filterEffect.value));
+      renderSliderDepth(filterEffect.value);
     }
     renderEffect(filterEffect.name, filterEffect.value);
   };
