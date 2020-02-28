@@ -13,7 +13,6 @@
   var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
   var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
   var effectLevel = imgUploadOverlay.querySelector('.effect-level');
-  var effectLevelLine = effectLevel.querySelector('.effect-level__line');
   var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
 
   var imgUploadForm = pictures.querySelector('.img-upload__form');
@@ -33,7 +32,7 @@
     }
 
     effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
-    effectLevelLine.addEventListener('click', onEffectLevelLineClick);
+    effectLevel.addEventListener('click', onEffectLevelLineClick);
     imgUploadForm.addEventListener('submit', onFormSubmit);
     textHashtagsInput.addEventListener('input', onTextHashtagsInput);
     textDescriptionInput.addEventListener('input', onTextDescriptionInput);
@@ -100,7 +99,6 @@
   var onEffectLevelLineClick = function (evt) {
     window.slider.onLineClick(evt);
   };
-
 
   var onTextHashtagsInput = function (evt) {
     window.validation.hashtags(evt.target);

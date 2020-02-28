@@ -54,7 +54,20 @@
   };
 
   var onSliderLineClick = function (evt) {
-    var pinOffsetLeft = evt.clientX - effectLevelLine.getBoundingClientRect().x;
+    var effectLevelLineX = effectLevelLine.getBoundingClientRect().x;
+    var effectLevelLineLegth = effectLevelLine.getBoundingClientRect().width;
+    var pinOffsetLeft;
+    switch (true) {
+      case (evt.clientX < effectLevelLineX):
+        pinOffsetLeft = 0;
+        break;
+      case (evt.clientX > (effectLevelLineX + effectLevelLineLegth)):
+        pinOffsetLeft = effectLevelLineLegth;
+        break;
+      default:
+        pinOffsetLeft = evt.clientX - effectLevelLineX;
+    }
+
     renderSlider(pinOffsetLeft, filterEffect.value);
     filterEffect.value = calculateEffectValue(effectLevelLine, effectLevelPin);
     effectLevelValueInput.value = filterEffect.value;
