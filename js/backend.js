@@ -5,14 +5,20 @@
 
   var URL = {
     save: 'https://js.dump.academy/kekstagram',
-    load: 'https://js.dump.academy/kekstagram/data1'
+    load: 'https://js.dump.academy/kekstagram/data'
   };
 
   var dataLoadHandler = function (xhr, onLoad, onError) {
     xhr.addEventListener('load', function () {
-      switch (xhr.status) {
-        case StatusCode.OK:
+      switch (true) {
+        case (xhr.status === StatusCode.OK):
           onLoad(xhr.response);
+          break;
+        case RegExp(StatusCode.CLIENT).test(xhr.status):
+          onError('Ошибка запроса данных');
+          break;
+        case RegExp(StatusCode.SERVER).test(xhr.status):
+          onError('Ошибка загрузки данных с сервера');
           break;
         default:
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);

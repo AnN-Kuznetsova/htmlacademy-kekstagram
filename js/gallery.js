@@ -13,8 +13,8 @@
     pictures.appendChild(window.preview(photos));
   };
 
-  var onBackendError = function () {
-    window.loadMessage.create(messageTemplate.loadError, 'Ошибка загрузки данных с сервера', 'Продолжить');
+  var onBackendError = function (errorMessage) {
+    window.loadMessage.create(messageTemplate.loadError, errorMessage, 'Продолжить');
   };
 
   var onPicturesClick = function (evt) {

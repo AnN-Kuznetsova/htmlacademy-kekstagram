@@ -2,7 +2,9 @@
 
 (function () {
   var StatusCode = {
-    OK: 200
+    OK: 200,
+    CLIENT: /(^4[0-9]{2}){1}/,
+    SERVER: /(^5[0-9]{2}){1}/
   };
 
   var TIMEOUT_IN_MS = 10000;
