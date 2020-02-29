@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  var StatusCode = {
+    OK: 200
+  };
+
+  var TIMEOUT_IN_MS = 10000;
+
   var Key = {
     ESC: 'Escape',
     ENTER: 'Enter',
@@ -64,6 +70,8 @@
     isArrowLeftEvent: onArrowLeftPress,
     isArrowUpEvent: onArrowUpPress,
     isArrowDownEvent: onArrowDownPress,
-    onPopupEscPress: onPopupEscPress
+    onPopupEscPress: onPopupEscPress,
+    StatusCode: StatusCode,
+    timeout: TIMEOUT_IN_MS
   };
 })();
