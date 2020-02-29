@@ -5,7 +5,7 @@
 
   var URL = {
     save: 'https://js.dump.academy/kekstagram',
-    load: 'https://js.dump.academy/kekstagram/data'
+    load: 'https://js.dump.academy/kekstagram/data1'
   };
 
   var dataLoadHandler = function (xhr, onLoad, onError) {

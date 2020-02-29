@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var messageTemplate = window.loadMessage.messageTemplate;
+
   var pictures = document.querySelector('.pictures');
   var uploadFileInput = pictures.querySelector('#upload-file');
 
@@ -12,7 +14,7 @@
   };
 
   var onBackendError = function (errorMessage) {
-    window.alert(errorMessage);
+    window.loadMessage.create(messageTemplate.loadError);
   };
 
   var onPicturesClick = function (evt) {
