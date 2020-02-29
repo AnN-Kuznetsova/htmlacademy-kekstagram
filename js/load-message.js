@@ -2,19 +2,32 @@
 
 (function () {
   var messageTemplate = {
-    loadError: document.querySelector('#load-error')
+    loadError: document.querySelector('#error')
   };
 
   var main = document.querySelector('main');
   var messageClass = '';
 
-  var renderMessage = function (template) {
+  var createMessage = function (template, messageText, buttonText) {
+    renderMessage(template, messageText, buttonText);
+
+    var messageContainer = main.querySelector(messageClass);
+    messageContainer.addEventListener('click', onMessageButtonClick);
+  };
+
+  var renderMessage = function (template, messageText, buttonText) {
     var fragment = document.createDocumentFragment();
     var messageElement = template.content.cloneNode(true);
+
+    if (messageText) {
+      messageElement.querySelector('.error__title').textContent = messageText;
+    }
+    if (buttonText) {
+      messageElement.querySelector('.error__button').textContent = buttonText;
+    }
+
     fragment.appendChild(messageElement);
-    window.console.log(template);
     messageClass = '.' + template.id;
-    window.console.log(messageClass);
     main.appendChild(fragment);
   };
 
@@ -22,15 +35,9 @@
     main.removeChild(evt.currentTarget);
   };
 
-  var createLoadMessage = function (template) {
-    renderMessage(template);
-
-    var messageContainer = main.querySelector(messageClass);
-    messageContainer.addEventListener('click', onMessageButtonClick);
-  };
 
   window.loadMessage = {
     messageTemplate: messageTemplate,
-    create: createLoadMessage
+    create: createMessage
   };
 })();
