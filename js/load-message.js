@@ -6,13 +6,14 @@
   };
 
   var main = document.querySelector('main');
-  var messageClass = '';
+  var message = {};
 
   var createMessage = function (template, messageText, buttonText) {
     renderMessage(template, messageText, buttonText);
 
-    var messageContainer = main.querySelector(messageClass);
-    messageContainer.addEventListener('click', onMessageButtonClick);
+    message.container = main.querySelector(message.class);
+    message.container.addEventListener('click', onMessageButtonClick);
+    document.addEventListener('keydown', onMessageContainerEscPress);
   };
 
   var renderMessage = function (template, messageText, buttonText) {
@@ -27,12 +28,21 @@
     }
 
     fragment.appendChild(messageElement);
-    messageClass = '.' + template.id;
+    message.class = '.' + template.id;
     main.appendChild(fragment);
   };
 
-  var onMessageButtonClick = function (evt) {
-    main.removeChild(evt.currentTarget);
+  var removeMessage = function () {
+    main.removeChild(message.container);
+    document.removeEventListener('keydown', onMessageContainerEscPress);
+  };
+
+  var onMessageButtonClick = function () {
+    removeMessage();
+  };
+
+  var onMessageContainerEscPress = function (evt) {
+    window.util.isEscEvent(evt, removeMessage);
   };
 
 
