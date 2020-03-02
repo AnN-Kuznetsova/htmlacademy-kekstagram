@@ -26,7 +26,7 @@
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения.');
+      onError('Произошла ошибка соединения');
     });
 
     xhr.timeout = TIMEOUT;

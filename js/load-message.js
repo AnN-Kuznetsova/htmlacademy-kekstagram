@@ -2,7 +2,9 @@
 
 (function () {
   var messageTemplate = {
-    loadError: document.querySelector('#error')
+    loadError: document.querySelector('#error'),
+    loadSuccess: document.querySelector('#success'),
+    loadMessages: document.querySelector('#messages')
   };
 
   var main = document.querySelector('main');

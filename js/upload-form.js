@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var messageTemplate = window.loadMessage.messageTemplate;
+
   var body = document.querySelector('body');
   var pictures = document.querySelector('.pictures');
 
@@ -117,11 +119,20 @@
     window.validation.uploadFile(evt.target);
   };
 
+  var onBackendSave = function () {
+    closeImgUploadOverlay();
+    window.loadMessage.create(messageTemplate.loadSuccess);
+  };
+
+  var onBackendError = function () {
+    closeImgUploadOverlay();
+    window.loadMessage.create(messageTemplate.loadError);
+  };
+
   var onFormSubmit = function (evt) {
     evt.preventDefault();
     if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
-      evt.target.submit();
-      closeImgUploadOverlay();
+      window.backend.save(new FormData(imgUploadForm), onBackendSave, onBackendError);
     }
   };
 
