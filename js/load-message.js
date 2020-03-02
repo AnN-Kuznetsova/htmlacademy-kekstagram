@@ -8,14 +8,19 @@
   };
 
   var main = document.querySelector('main');
-  var message = {};
+  var message;
 
   var createMessage = function (template, messageText, buttonText) {
+    if (message) {
+      removeMessage();
+    }
+
     renderMessage(template, messageText, buttonText);
 
-    message.container = main.querySelector(message.class);
-    message.container.addEventListener('click', onMessageButtonClick);
-    document.addEventListener('keydown', onMessageContainerEscPress);
+    if (message && message.querySelector('button')) {
+      message.addEventListener('click', onMessageButtonClick);
+      document.addEventListener('keydown', onMessageContainerEscPress);
+    }
   };
 
   var renderMessage = function (template, messageText, buttonText) {
@@ -30,12 +35,15 @@
     }
 
     fragment.appendChild(messageElement);
-    message.class = '.' + template.id;
-    main.appendChild(fragment);
+    message = document.createElement('div');
+    message.classList.add('js-message--' + template.id);
+    message.appendChild(fragment);
+    main.appendChild(message);
   };
 
   var removeMessage = function () {
-    main.removeChild(message.container);
+    main.removeChild(message);
+    message = null;
     document.removeEventListener('keydown', onMessageContainerEscPress);
   };
 
