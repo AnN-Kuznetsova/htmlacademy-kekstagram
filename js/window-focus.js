@@ -34,9 +34,17 @@
       }
     };
 
-    tabIndexChange(pictures.querySelectorAll('.picture'));
-    tabIndexChange(footer.querySelectorAll('a'));
-    tabIndexChange(imgFilters.querySelectorAll('button'));
+    var focusedElements = [
+      pictures.querySelectorAll('.picture'),
+      footer.querySelectorAll('a'),
+      imgFilters.querySelectorAll('button')
+    ];
+
+    focusedElements.forEach(function (element) {
+      if (element) {
+        tabIndexChange(element);
+      }
+    });
   };
 
   window.windowFocus = {
