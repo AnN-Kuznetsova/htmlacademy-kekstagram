@@ -60,6 +60,7 @@
 
   var closeImgUploadOverlay = function () {
     body.classList.remove('modal-open');
+    uploadCancel.disabled = false;
     imgUploadOverlay.classList.add('hidden');
     resetImgUploadOverlay();
     destroyedImgUploadOverlay();
@@ -132,6 +133,7 @@
   var onFormSubmit = function (evt) {
     evt.preventDefault();
     if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
+      uploadCancel.disabled = true;
       window.loadMessage.create(messageTemplate.loadMessages);
       window.backend.save(new FormData(imgUploadForm), onBackendSave, onBackendError);
     }
