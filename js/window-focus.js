@@ -47,8 +47,16 @@
     });
   };
 
+  var changeFormDisabled = function (form, disabledValue) {
+    var elements = form.elements;
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].disabled = disabledValue;
+    }
+  };
+
   window.windowFocus = {
     focusOut: focusOut,
-    focusIn: focusIn
+    focusIn: focusIn,
+    changeFormDisabled: changeFormDisabled
   };
 })();

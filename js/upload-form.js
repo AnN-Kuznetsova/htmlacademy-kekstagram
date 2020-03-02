@@ -60,7 +60,7 @@
 
   var closeImgUploadOverlay = function () {
     body.classList.remove('modal-open');
-    changeFormDisabled();
+    window.windowFocus.changeFormDisabled(imgUploadForm, false);
     imgUploadOverlay.classList.add('hidden');
     resetImgUploadOverlay();
     destroyedImgUploadOverlay();
@@ -120,13 +120,6 @@
     window.validation.uploadFile(evt.target);
   };
 
-  var changeFormDisabled = function () {
-    var elements = imgUploadForm.elements;
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].disabled = !elements[i].disabled;
-    }
-  };
-
   var onBackendSave = function () {
     closeImgUploadOverlay();
     window.loadMessage.create(messageTemplate.loadSuccess);
@@ -142,7 +135,7 @@
     evt.preventDefault();
     if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
       data = new FormData(imgUploadForm);
-      changeFormDisabled();
+      window.windowFocus.changeFormDisabled(imgUploadForm, true);
       window.loadMessage.create(messageTemplate.loadMessages);
       window.backend.save(data, onBackendSave, onBackendError);
     }
