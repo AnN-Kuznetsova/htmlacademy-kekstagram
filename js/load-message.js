@@ -16,6 +16,7 @@
     }
 
     renderMessage(template, messageText, buttonText);
+    window.windowFocus.focusOut();
 
     if (message && message.querySelector('button')) {
       message.addEventListener('click', onMessageButtonClick);
@@ -45,6 +46,7 @@
     main.removeChild(message);
     message = null;
     document.removeEventListener('keydown', onMessageContainerEscPress);
+    window.windowFocus.focusIn();
   };
 
   var onMessageButtonClick = function () {
