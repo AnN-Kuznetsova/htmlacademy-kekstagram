@@ -21,6 +21,7 @@
     if (message && message.querySelector('button')) {
       message.addEventListener('click', onMessageButtonClick);
       document.addEventListener('keydown', onMessageContainerEscPress);
+      message.querySelector('button').focus();
     }
   };
 
