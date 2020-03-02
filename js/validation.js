@@ -92,6 +92,11 @@
   var setValidityResalt = function (specification, validationValue, validationField) {
     var validityResalt = getValidation(specification, validationValue);
     validationField.setCustomValidity(validityResalt.message);
+    if (!validityResalt.resalt) {
+      validationField.style.boxShadow = '0 0 0 5px #ff4e4e';
+    } else {
+      validationField.style.boxShadow = 'none';
+    }
     return validityResalt.resalt;
   };
 
