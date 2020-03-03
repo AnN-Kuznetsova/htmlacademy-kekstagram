@@ -119,7 +119,6 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
-    window.console.log(window.validation.uploadFile(uploadFileInput));
     if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
       evt.target.submit();
       closeImgUploadOverlay();

@@ -1,6 +1,14 @@
 'use strict';
 
 (function () {
+  var StatusCode = {
+    OK: 200,
+    CLIENT: /(^4[0-9]{2}){1}/,
+    SERVER: /(^5[0-9]{2}){1}/
+  };
+
+  var TIMEOUT_IN_MS = 10000;
+
   var Key = {
     ESC: 'Escape',
     ENTER: 'Enter',
@@ -64,6 +72,8 @@
     isArrowLeftEvent: onArrowLeftPress,
     isArrowUpEvent: onArrowUpPress,
     isArrowDownEvent: onArrowDownPress,
-    onPopupEscPress: onPopupEscPress
+    onPopupEscPress: onPopupEscPress,
+    StatusCode: StatusCode,
+    timeout: TIMEOUT_IN_MS
   };
 })();
