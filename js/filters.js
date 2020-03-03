@@ -19,10 +19,16 @@
     return filteredPhotos;
   };
 
+  var filterDiscussedFun = function (photos) {
+    return photos.sort(function (left, right) {
+      return (right.comments.length - left.comments.length);
+    });
+  };
+
   var photoFilters = {
     'default': filterDefaultFun,
     'random': filterRandomFun,
-    'discussed': 'dis'
+    'discussed': filterDiscussedFun
   };
 
 
@@ -71,8 +77,6 @@
   };
 
   var addFilter = function (filteredPhotos) {
- //window.console.log('photoFilter  ' + photoFilter);
- window.console.log(filteredPhotos);
     window.preview(filteredPhotos);
   };
 
