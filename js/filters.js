@@ -7,6 +7,10 @@
   var filters = imgFilters.querySelectorAll('.img-filters__button');
 
 
+  var filterDefaultFun = function (photos) {
+    return photos;
+  };
+
   var filterRandomFun = function (photos) {
     var filteredPhotos = [];
     for (var i = 0; i < RANDOM_PHOTOS_COUNT; i++) {
@@ -16,7 +20,7 @@
   };
 
   var photoFilters = {
-    'default': 'def',
+    'default': filterDefaultFun,
     'random': filterRandomFun,
     'discussed': 'dis'
   };
