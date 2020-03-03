@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var messageTemplate = window.loadMessage.messageTemplate;
+
   var body = document.querySelector('body');
   var pictures = document.querySelector('.pictures');
 
@@ -58,6 +60,7 @@
 
   var closeImgUploadOverlay = function () {
     body.classList.remove('modal-open');
+    window.windowFocus.changeFormDisabled(imgUploadForm, false);
     imgUploadOverlay.classList.add('hidden');
     resetImgUploadOverlay();
     destroyedImgUploadOverlay();
@@ -117,11 +120,24 @@
     window.validation.uploadFile(evt.target);
   };
 
+  var onBackendSave = function () {
+    closeImgUploadOverlay();
+    window.loadMessage.create(messageTemplate.loadSuccess);
+  };
+
+  var onBackendError = function () {
+    closeImgUploadOverlay();
+    window.loadMessage.create(messageTemplate.loadError);
+  };
+
   var onFormSubmit = function (evt) {
+    var data;
     evt.preventDefault();
     if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
-      evt.target.submit();
-      closeImgUploadOverlay();
+      data = new FormData(imgUploadForm);
+      window.windowFocus.changeFormDisabled(imgUploadForm, true);
+      window.loadMessage.create(messageTemplate.loadMessages);
+      window.backend.save(data, onBackendSave, onBackendError);
     }
   };
 

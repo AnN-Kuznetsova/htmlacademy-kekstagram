@@ -2,18 +2,27 @@
 
 (function () {
   var messageTemplate = {
-    loadError: document.querySelector('#error')
+    loadError: document.querySelector('#error'),
+    loadSuccess: document.querySelector('#success'),
+    loadMessages: document.querySelector('#messages')
   };
 
   var main = document.querySelector('main');
-  var message = {};
+  var message;
 
   var createMessage = function (template, messageText, buttonText) {
-    renderMessage(template, messageText, buttonText);
+    if (message) {
+      removeMessage();
+    }
 
-    message.container = main.querySelector(message.class);
-    message.container.addEventListener('click', onMessageButtonClick);
-    document.addEventListener('keydown', onMessageContainerEscPress);
+    renderMessage(template, messageText, buttonText);
+    window.windowFocus.focusOut();
+
+    if (message && message.querySelector('button')) {
+      message.addEventListener('click', onMessageButtonClick);
+      document.addEventListener('keydown', onMessageContainerEscPress);
+      message.querySelector('button').focus();
+    }
   };
 
   var renderMessage = function (template, messageText, buttonText) {
@@ -28,13 +37,17 @@
     }
 
     fragment.appendChild(messageElement);
-    message.class = '.' + template.id;
-    main.appendChild(fragment);
+    message = document.createElement('div');
+    message.classList.add('js-message--' + template.id);
+    message.appendChild(fragment);
+    main.appendChild(message);
   };
 
   var removeMessage = function () {
-    main.removeChild(message.container);
+    main.removeChild(message);
+    message = null;
     document.removeEventListener('keydown', onMessageContainerEscPress);
+    window.windowFocus.focusIn();
   };
 
   var onMessageButtonClick = function () {

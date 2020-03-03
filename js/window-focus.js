@@ -1,7 +1,11 @@
 'use strict';
 
 (function () {
-  var focusIndex = window.parameters.focusIndex;
+  var FocusIndex = {
+    REMOVE: '-1',
+    ADD: '0',
+    DEFAULT_FOCUS_ELEMENT: document.querySelector('.img-upload__label')
+  };
 
   var pictures = document.querySelector('.pictures');
   var footer = document.querySelector('footer');
@@ -10,12 +14,12 @@
   var currentElement;
 
   var focusOut = function (focusElement) {
-    changeFocus(focusIndex.REMOVE);
-    currentElement = focusElement;
+    changeFocus(FocusIndex.REMOVE);
+    currentElement = focusElement ? focusElement : FocusIndex.DEFAULT_FOCUS_ELEMENT;
   };
 
   var focusIn = function () {
-    changeFocus(focusIndex.ADD);
+    changeFocus(FocusIndex.ADD);
     replaceCurrentElement();
   };
 
@@ -30,13 +34,29 @@
       }
     };
 
-    tabIndexChange(pictures.querySelectorAll('.picture'));
-    tabIndexChange(footer.querySelectorAll('a'));
-    tabIndexChange(imgFilters.querySelectorAll('button'));
+    var focusedElements = [
+      pictures.querySelectorAll('.picture'),
+      footer.querySelectorAll('a'),
+      imgFilters.querySelectorAll('button')
+    ];
+
+    focusedElements.forEach(function (element) {
+      if (element) {
+        tabIndexChange(element);
+      }
+    });
+  };
+
+  var changeFormDisabled = function (form, disabledValue) {
+    var elements = form.elements;
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].disabled = disabledValue;
+    }
   };
 
   window.windowFocus = {
     focusOut: focusOut,
-    focusIn: focusIn
+    focusIn: focusIn,
+    changeFormDisabled: changeFormDisabled
   };
 })();
