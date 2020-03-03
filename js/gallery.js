@@ -11,6 +11,7 @@
   var onBackendLoad = function (photosArray) {
     photos = photosArray;
     pictures.appendChild(window.preview(photos));
+    window.filters();
   };
 
   var onBackendError = function (errorMessage) {
