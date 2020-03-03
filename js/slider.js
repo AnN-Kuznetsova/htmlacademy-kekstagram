@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var NONE_EFFECT_NAME = window.parameters.effect.NONE_NAME;
+  var NONE_EFFECT_NAME = window.effectSettings.effect.NONE_NAME;
   var SLIDER_STEP = 10;
 
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
@@ -12,8 +12,8 @@
   var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
   var effectLevelDepth = effectLevel.querySelector('.effect-level__depth');
 
-  var filters = window.parameters.effectFilters;
-  var filterEffect = window.parameters.filterEffectObject;
+  var filters = window.effectSettings.effectFilters;
+  var filterEffect = window.effectSettings.filterEffectObject;
 
 
   // слайдер MouseDown

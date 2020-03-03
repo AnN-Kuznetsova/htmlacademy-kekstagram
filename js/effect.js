@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var DEFAULT_EFFECT_NAME = window.parameters.effect.DEFAULT_NAME;
-  var DEFAULT_EFFECT_VALUE = window.parameters.effect.DEFAULT_VALUE;
+  var DEFAULT_EFFECT_NAME = window.effectSettings.effect.DEFAULT_NAME;
+  var DEFAULT_EFFECT_VALUE = window.effectSettings.effect.DEFAULT_VALUE;
 
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
   var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
@@ -10,7 +10,7 @@
   var effectLevel = imgUploadOverlay.querySelector('.effect-level');
   var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
 
-  var filterEffect = window.parameters.filterEffectObject;
+  var filterEffect = window.effectSettings.filterEffectObject;
 
   var removeEffect = function () {
     if (filterEffect.class) {

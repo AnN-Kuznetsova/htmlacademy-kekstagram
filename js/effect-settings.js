@@ -49,8 +49,7 @@
   })();
 
 
-  window.parameters = {
-    photos: [],
+  window.effectSettings = {
     scale: Scale,
     effect: Effect,
     effectFilters: effectFilters,

@@ -6,13 +6,13 @@
   var pictures = document.querySelector('.pictures');
   var uploadFileInput = pictures.querySelector('#upload-file');
 
-  var photos;
+  var photos = [];
 
   var onBackendLoad = function (photosArray) {
     photos = photosArray;
-    window.parameters.photos = photos;
+    window.gallery = photos;
     window.preview(photos);
-    window.filters();
+    window.photoFilters();
   };
 
   var onBackendError = function (errorMessage) {
@@ -38,5 +38,7 @@
     window.uploadForm();
   });
 
+
+  window.gallery = photos;
 })();
 

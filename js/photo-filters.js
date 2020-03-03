@@ -47,10 +47,10 @@
   };
 
   var getFilteredPhotos = function (filterName) {
-    var photos = window.parameters.photos.slice();
+    var photos = window.gallery.slice();
     return photoFilters[filterName](photos);
   };
 
 
-  window.filters = addFilters;
+  window.photoFilters = addFilters;
 })();

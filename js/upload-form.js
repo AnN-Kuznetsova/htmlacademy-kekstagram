@@ -50,7 +50,7 @@
   //  Сброс параметров окна редактирования изображени в начальные установки
   var resetImgUploadOverlay = function () {
     uploadFileInput.value = '';
-    window.scale.render(window.parameters.scale.DEFAULT);
+    window.scale.render(window.effectSettings.scale.DEFAULT);
     window.effect.reset();
     textHashtagsInput.value = '';
     window.validation.hashtags(textHashtagsInput);
