@@ -48,9 +48,6 @@
     return effectObject;
   })();
 
-  /* var photoFilters = {
-
-  }; */
 
   window.parameters = {
     photos: [],
