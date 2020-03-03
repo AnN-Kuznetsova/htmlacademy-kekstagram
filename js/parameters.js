@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var FocusIndex = {
+    REMOVE: '-1',
+    ADD: '0'
+  };
+
   var Scale = {
     MIN: 25,
     MAX: 100,
@@ -49,6 +54,7 @@
   })();
 
   window.parameters = {
+    focusIndex: FocusIndex,
     scale: Scale,
     effect: Effect,
     filters: filters,
