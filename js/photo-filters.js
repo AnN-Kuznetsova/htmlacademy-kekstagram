@@ -23,11 +23,11 @@
     setFilter(evt.target.id);
   };
 
-  var setFilter = function (filterName) {
+  var setFilter = window.debounce(function (filterName) {
     var photoFilter = getFilter(filterName);
     var filteredPhotos = getFilteredPhotos(photoFilter);
     window.preview(filteredPhotos);
-  };
+  });
 
   var getFilter = function (filterName) {
     var photoFilter;
