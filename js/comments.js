@@ -52,6 +52,7 @@
 
   var addComments = function (commentsArray) {
     if (commentsArray.length <= MAX_COMMENTS_COUNT) {
+      bigPictureCommentsLoader.removeEventListener('click', onBigPictureCommentsLoaderClick);
       hideCommentsControllers();
       renderSocialComments(commentsArray);
     } else {
