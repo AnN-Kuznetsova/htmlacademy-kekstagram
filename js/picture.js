@@ -6,9 +6,6 @@
   var bigPicture = document.querySelector('.big-picture');
   var bigPictureCancel = bigPicture.querySelector('#picture-cancel');
 
-  var bigPictureSocialCommentCount = bigPicture.querySelector('.social__comment-count');
-  var bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
-
   //  Функция нахождения объекта фотографии
   var getPhotoObject = function (clickedPicture, photosArray) {
     var picturesArray = pictures.querySelectorAll('.picture');
@@ -51,9 +48,6 @@
       bigPicture.classList.remove('hidden');
       mountedBigPicture();
       window.windowFocus.focusOut(clickedPicture);
-
-      bigPictureSocialCommentCount.classList.add('hidden');
-      bigPictureCommentsLoader.classList.add('hidden');
     }
   };
 
