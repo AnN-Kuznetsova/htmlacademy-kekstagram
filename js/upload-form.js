@@ -22,6 +22,7 @@
   var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
   var textDescriptionInput = imgUploadForm.querySelector('.text__description');
 
+
   //  mountedImgUploadOverlay() - всё добавляет
   var mountedImgUploadOverlay = function () {
     uploadCancel.addEventListener('click', onUploadCancelClick);

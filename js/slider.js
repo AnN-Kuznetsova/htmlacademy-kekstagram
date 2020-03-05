@@ -124,6 +124,7 @@
     renderEffect(filterEffect.name, filterEffect.value);
   };
 
+
   window.slider = {
     onPinMouseDown: onSliderPinMouseDown,
     onPinKeydown: onSliderPinKeydown,

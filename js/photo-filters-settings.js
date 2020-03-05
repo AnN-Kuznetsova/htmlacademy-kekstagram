@@ -3,6 +3,7 @@
 (function () {
   var RANDOM_PHOTOS_COUNT = 10;
 
+
   var filterDefaultFun = function (photos) {
     return photos;
   };

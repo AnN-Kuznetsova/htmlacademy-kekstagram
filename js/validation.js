@@ -13,6 +13,7 @@
   var isPattern = validationFunctions.isPattern;
   var isArrayElementDuplicate = validationFunctions.isArrayElementDuplicate;
 
+
   var getValidation = function (specification, validationObject) {
     var errorsArray = specification.validitiesErrors;
     var isValidity = true;

@@ -6,6 +6,7 @@
 
   var renderPhotos = [];
 
+
   var renderPreviewPhoto = function (photo) {
     var photoElement = photoTemplate.cloneNode(true);
     photoElement.querySelector('.picture__img').src = photo.url;
@@ -39,6 +40,7 @@
       window.picture(evt.target, renderPhotos);
     });
   };
+
 
   window.preview = renderGallery;
 })();

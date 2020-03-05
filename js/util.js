@@ -65,6 +65,7 @@
     });
   };
 
+
   window.util = {
     isEscEvent: onEscPress,
     isEnterEvent: onEnterPress,

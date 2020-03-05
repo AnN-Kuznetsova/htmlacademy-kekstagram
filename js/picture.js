@@ -6,6 +6,7 @@
   var bigPicture = document.querySelector('.big-picture');
   var bigPictureCancel = bigPicture.querySelector('#picture-cancel');
 
+
   //  Функция нахождения объекта фотографии
   var getPhotoObject = function (clickedPicture, photosArray) {
     var picturesArray = pictures.querySelectorAll('.picture');
@@ -50,6 +51,7 @@
       window.windowFocus.focusOut(clickedPicture);
     }
   };
+
 
   window.picture = openBigPicture;
 })();

@@ -9,6 +9,7 @@
     UPLOAD_FILE: 'uploadFileSpecification'
   };
 
+
   //  Спецификация для хеш-тегов
   var hashtagsSpecification = (function () {
     var maxCount = 5;

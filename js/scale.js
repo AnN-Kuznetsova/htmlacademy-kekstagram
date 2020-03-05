@@ -9,6 +9,7 @@
   var scaleControlValue = imgUploadOverlay.querySelector('.scale__control--value');
   var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
 
+
   var getScaleValue = function () {
     return parseInt(scaleControlValue.value.slice(0, (scaleControlValue.value.length - 1)), 10);
   };
@@ -34,6 +35,7 @@
     }
     renderScale(scaleValue);
   };
+
 
   window.scale = {
     increase: scaleIncrease,
