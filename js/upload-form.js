@@ -52,18 +52,21 @@
   //  Сброс параметров окна редактирования изображени в начальные установки
   var resetImgUploadOverlay = function () {
     uploadFileInput.value = '';
-
-    imgUploadPreview.src = '';
-    effectsPreview.forEach(function (element) {
-      element.style.backgroundImage = 'url()';
-    });
-    //setPreviewImg()
+    setPreviewImg('');
     window.scale.render(window.effectSettings.scale.DEFAULT);
     window.effect.reset();
     textHashtagsInput.value = '';
     window.validation.hashtags(textHashtagsInput);
     textDescriptionInput.value = '';
     window.validation.description(textDescriptionInput);
+  };
+
+  var setPreviewImg = function (imgUrl) {
+    imgUploadPreview.src = imgUrl;
+
+    effectsPreview.forEach(function (element) {
+      element.style.backgroundImage = 'url(' + imgUrl + ')';
+    });
   };
 
   var closeImgUploadOverlay = function () {
@@ -83,14 +86,13 @@
     window.util.onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
   };
 
-  var openImgUploadOverlay = function (uploadFile) {
+  var openImgUploadOverlay = function (previewPhotoDataUrl) {
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
-    window.uploadedPhotoPreview(uploadFile, imgUploadPreview, effectsPreview);
     window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
-    //window.windowFocus.changeFormDisabled(imgUploadForm, true);
     window.effect.reset();
+    setPreviewImg(previewPhotoDataUrl);
   };
 
   var onScaleControlSmallerClick = function () {

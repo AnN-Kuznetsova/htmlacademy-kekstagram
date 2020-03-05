@@ -12,7 +12,7 @@
   var onUploadFileInputChange = function (evt) {
     var validityResalt = window.validation.uploadFile(evt.target);
     if (validityResalt.resalt) {
-      window.uploadForm(evt.target);
+      window.uploadedPhotoPreview(evt.target);
     } else {
       window.loadMessage.create(messageTemplate.loadError, validityResalt.message, 'Продолжить');
     }
