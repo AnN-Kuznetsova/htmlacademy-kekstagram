@@ -8,6 +8,15 @@
 
   var photos = [];
 
+
+  var onUploadFileInputChange = function (evt) {
+    if (window.validation.uploadFile(evt.target)) {
+      window.uploadForm(evt.target);
+    } else {
+      window.loadMessage.create(messageTemplate.loadError, 'Неправильный формат файла', 'Продолжить');
+    }
+  };
+
   var onBackendLoad = function (photosArray) {
     photos = photosArray;
     window.gallery = photos;
@@ -20,12 +29,8 @@
   };
 
   window.backend.load(onBackendLoad, onBackendError);
-
-  uploadFileInput.addEventListener('change', function () {
-    window.uploadForm();
-  });
+  uploadFileInput.addEventListener('change', onUploadFileInputChange);
 
 
   window.gallery = photos;
 })();
-

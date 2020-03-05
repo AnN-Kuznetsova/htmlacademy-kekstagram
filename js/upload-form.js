@@ -10,6 +10,7 @@
   var uploadFileInput = imgUpload.querySelector('#upload-file');
   var imgUploadOverlay = imgUpload.querySelector('.img-upload__overlay'); //  Форма редактирования изображения
   var uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
+  var imgUploadPreview = document.querySelector('.img-upload__preview img');
 
   var scaleControlSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
   var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
@@ -39,7 +40,6 @@
     imgUploadForm.addEventListener('submit', onFormSubmit);
     textHashtagsInput.addEventListener('input', onTextHashtagsInput);
     textDescriptionInput.addEventListener('input', onTextDescriptionInput);
-    uploadFileInput.addEventListener('change', onUploadFileInputChange);
   };
 
   //  destroyedImgUploadOverlay() - всё удаляет
@@ -75,14 +75,14 @@
     window.util.onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
   };
 
-  var openImgUploadOverlay = function () {
+  var openImgUploadOverlay = function (uploadFile) {
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
+    window.uploadedPhotoPreview(uploadFile, imgUploadPreview);
     window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
     window.effect.reset();
   };
-
 
   var onScaleControlSmallerClick = function () {
     window.scale.decrease();
@@ -114,10 +114,6 @@
 
   var onTextDescriptionInput = function (evt) {
     window.validation.description(evt.target);
-  };
-
-  var onUploadFileInputChange = function (evt) {
-    window.validation.uploadFile(evt.target);
   };
 
   var onBackendSave = function () {
