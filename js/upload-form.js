@@ -87,6 +87,7 @@
   };
 
   var openImgUploadOverlay = function (previewPhotoDataUrl) {
+    window.loadMessage.remove();
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
