@@ -15,13 +15,10 @@
 
   var uploadPhoto = function (fileInput) {
     var file = fileInput.files[0];
-    var fileName = '';
     var reader;
 
     if (file) {
-      fileName = file.name.toLowerCase();
-
-      if (matches(fileName)) {
+      if (matches(file.name.toLowerCase())) {
         reader = new FileReader();
         reader.addEventListener('load', onReaderLoad);
         reader.readAsDataURL(file);
