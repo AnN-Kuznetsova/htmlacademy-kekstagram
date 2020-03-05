@@ -98,7 +98,7 @@
     } else {
       validationField.style.boxShadow = 'none';
     }
-    return validityResalt.resalt;
+    return validityResalt;
   };
 
 

@@ -130,7 +130,7 @@
   var onFormSubmit = function (evt) {
     var data;
     evt.preventDefault();
-    if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
+    if (window.validation.uploadFile(uploadFileInput).resalt && window.validation.hashtags(textHashtagsInput).resalt && window.validation.description(textDescriptionInput).resalt) {
       data = new FormData(imgUploadForm);
       window.windowFocus.changeFormDisabled(imgUploadForm, true);
       window.loadMessage.create(messageTemplate.loadMessages);

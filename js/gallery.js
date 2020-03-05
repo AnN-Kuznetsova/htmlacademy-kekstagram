@@ -10,10 +10,11 @@
 
 
   var onUploadFileInputChange = function (evt) {
-    if (window.validation.uploadFile(evt.target)) {
+    var validityResalt = window.validation.uploadFile(evt.target);
+    if (validityResalt.resalt) {
       window.uploadForm(evt.target);
     } else {
-      window.loadMessage.create(messageTemplate.loadError, 'Неправильный формат файла', 'Продолжить');
+      window.loadMessage.create(messageTemplate.loadError, validityResalt.message, 'Продолжить');
     }
   };
 
