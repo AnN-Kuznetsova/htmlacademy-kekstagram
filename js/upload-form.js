@@ -10,7 +10,8 @@
   var uploadFileInput = imgUpload.querySelector('#upload-file');
   var imgUploadOverlay = imgUpload.querySelector('.img-upload__overlay'); //  Форма редактирования изображения
   var uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
-  var imgUploadPreview = document.querySelector('.img-upload__preview img');
+  var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview img');
+  var effectsPreview = imgUploadOverlay.querySelectorAll('.effects__preview');
 
   var scaleControlSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
   var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
@@ -51,6 +52,12 @@
   //  Сброс параметров окна редактирования изображени в начальные установки
   var resetImgUploadOverlay = function () {
     uploadFileInput.value = '';
+
+    imgUploadPreview.src = '';
+    effectsPreview.forEach(function (element) {
+      element.style.backgroundImage = 'url()';
+    });
+    //setPreviewImg()
     window.scale.render(window.effectSettings.scale.DEFAULT);
     window.effect.reset();
     textHashtagsInput.value = '';
@@ -80,8 +87,9 @@
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
-    window.uploadedPhotoPreview(uploadFile, imgUploadPreview);
+    window.uploadedPhotoPreview(uploadFile, imgUploadPreview, effectsPreview);
     window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
+    //window.windowFocus.changeFormDisabled(imgUploadForm, true);
     window.effect.reset();
   };
 

@@ -62,6 +62,7 @@
 
   window.loadMessage = {
     messageTemplate: messageTemplate,
-    create: createMessage
+    create: createMessage,
+    remove: removeMessage
   };
 })();

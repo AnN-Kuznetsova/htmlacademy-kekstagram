@@ -3,7 +3,11 @@
 (function () {
   var FILE_TYPES = window.specifications.uploadFile.fileTypes;
 
+  var imgUploadForm = document.querySelector('.img-upload__form');
+  var messageTemplate = window.loadMessage.messageTemplate;
+
   var previewElement;
+  var effectsPreviewElements;
 
 
   var matches = function (fileName) {
@@ -12,21 +16,34 @@
     });
   };
 
-  var onReaderLoad = function (evt) {
-    previewElement.src = evt.target.result;
+  var setPreviewImg = function (imgUrl) {
+    previewElement.src = imgUrl;
+
+    effectsPreviewElements.forEach(function (element) {
+      element.style.backgroundImage = 'url(' + imgUrl + ')';
+    });
   };
 
-  var setUploadedPhoto = function (fileInput, previewElementValue) {
+  var onReaderLoad = function (evt) {
+    setPreviewImg(evt.target.result);
+    window.loadMessage.remove();
+    window.windowFocus.changeFormDisabled(imgUploadForm, false);
+  };
+
+  var setUploadedPhoto = function (fileInput, previewElementValue, effectsPreviewElementsValue) {
     var file = fileInput.files[0];
     var fileName = '';
     var reader;
 
     previewElement = previewElementValue;
+    effectsPreviewElements = effectsPreviewElementsValue;
 
     if (file) {
       fileName = file.name.toLowerCase();
 
       if (matches(fileName)) {
+        window.loadMessage.create(messageTemplate.loadMessages);
+        window.windowFocus.changeFormDisabled(imgUploadForm, true);
         reader = new FileReader();
         reader.addEventListener('load', onReaderLoad);
         reader.readAsDataURL(file);
