@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['.jpg', '.jpeg', '.png'];
+  var FILE_TYPES = window.specifications.uploadFile.fileTypes;
 
   var previewElement;
 
