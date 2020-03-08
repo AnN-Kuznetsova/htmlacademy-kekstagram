@@ -38,13 +38,13 @@
 
   var filterEffectObject = (function () {
     var effectObject = {};
-    effectObject.createClass = function (name) {
+    effectObject.createClassTitle = function (name) {
       return ('effects__preview--' + name);
     };
 
     effectObject.name = Effect.DEFAULT_NAME;
     effectObject.value = Effect.DEFAULT_VALUE;
-    effectObject.class = effectObject.createClass(effectObject.name);
+    effectObject.classTitle = effectObject.createClassTitle(effectObject.name);
     return effectObject;
   })();
 

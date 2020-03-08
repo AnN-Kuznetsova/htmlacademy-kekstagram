@@ -13,17 +13,17 @@
   var filterEffect = window.effectSettings.filterEffectObject;
 
   var removeEffect = function () {
-    if (filterEffect.class) {
-      imgUploadPreview.classList.remove(filterEffect.class);
+    if (filterEffect.classTitle) {
+      imgUploadPreview.classList.remove(filterEffect.classTitle);
     }
   };
 
   var addEffect = function (effectName) {
     filterEffect.name = effectName;
-    filterEffect.class = filterEffect.createClass(effectName);
+    filterEffect.classTitle = filterEffect.createClassTitle(effectName);
     filterEffect.value = DEFAULT_EFFECT_VALUE;
     effectLevelValueInput.value = filterEffect.value;
-    imgUploadPreview.classList.add(filterEffect.class);
+    imgUploadPreview.classList.add(filterEffect.classTitle);
   };
 
   var resetEffect = function () {
