@@ -6,7 +6,7 @@
 
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
   var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview');
-  var effectsRradioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
+  var effectsRadioButtons = imgUploadOverlay.querySelectorAll('.effects__radio');
   var effectLevel = imgUploadOverlay.querySelector('.effect-level');
   var effectLevelValueInput = effectLevel.querySelector('.effect-level__value');
 
@@ -29,10 +29,10 @@
 
   var resetEffect = function () {
     removeEffect();
-    for (var i = 0; i < effectsRradioButtons.length; i++) {
-      if (effectsRradioButtons[i].value === DEFAULT_EFFECT_NAME) {
-        effectsRradioButtons[i].checked = true;
-        addEffect(effectsRradioButtons[i].value);
+    for (var i = 0; i < effectsRadioButtons.length; i++) {
+      if (effectsRadioButtons[i].value === DEFAULT_EFFECT_NAME) {
+        effectsRadioButtons[i].checked = true;
+        addEffect(effectsRadioButtons[i].value);
       }
     }
     window.slider.init();
