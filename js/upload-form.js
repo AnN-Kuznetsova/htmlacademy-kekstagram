@@ -10,6 +10,8 @@
   var uploadFileInput = imgUpload.querySelector('#upload-file');
   var imgUploadOverlay = imgUpload.querySelector('.img-upload__overlay'); //  Форма редактирования изображения
   var uploadCancel = imgUploadOverlay.querySelector('#upload-cancel');
+  var imgUploadPreview = imgUploadOverlay.querySelector('.img-upload__preview img');
+  var effectsPreview = imgUploadOverlay.querySelectorAll('.effects__preview');
 
   var scaleControlSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
   var scaleControlBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
@@ -20,6 +22,7 @@
   var imgUploadForm = pictures.querySelector('.img-upload__form');
   var textHashtagsInput = imgUploadForm.querySelector('.text__hashtags');
   var textDescriptionInput = imgUploadForm.querySelector('.text__description');
+
 
   //  mountedImgUploadOverlay() - всё добавляет
   var mountedImgUploadOverlay = function () {
@@ -39,7 +42,6 @@
     imgUploadForm.addEventListener('submit', onFormSubmit);
     textHashtagsInput.addEventListener('input', onTextHashtagsInput);
     textDescriptionInput.addEventListener('input', onTextDescriptionInput);
-    uploadFileInput.addEventListener('change', onUploadFileInputChange);
   };
 
   //  destroyedImgUploadOverlay() - всё удаляет
@@ -50,12 +52,21 @@
   //  Сброс параметров окна редактирования изображени в начальные установки
   var resetImgUploadOverlay = function () {
     uploadFileInput.value = '';
+    setPreviewImg('');
     window.scale.render(window.effectSettings.scale.DEFAULT);
     window.effect.reset();
     textHashtagsInput.value = '';
     window.validation.hashtags(textHashtagsInput);
     textDescriptionInput.value = '';
     window.validation.description(textDescriptionInput);
+  };
+
+  var setPreviewImg = function (imgUrl) {
+    imgUploadPreview.src = imgUrl;
+
+    effectsPreview.forEach(function (element) {
+      element.style.backgroundImage = 'url(' + imgUrl + ')';
+    });
   };
 
   var closeImgUploadOverlay = function () {
@@ -75,14 +86,15 @@
     window.util.onPopupEscPress(evt, evt.target, closeImgUploadOverlay);
   };
 
-  var openImgUploadOverlay = function () {
+  var openImgUploadOverlay = function (previewPhotoDataUrl) {
+    window.loadMessage.remove();
     body.classList.add('modal-open');
     imgUploadOverlay.classList.remove('hidden');
     mountedImgUploadOverlay();
     window.windowFocus.focusOut(imgUpload.querySelector('.img-upload__label'));
     window.effect.reset();
+    setPreviewImg(previewPhotoDataUrl);
   };
-
 
   var onScaleControlSmallerClick = function () {
     window.scale.decrease();
@@ -116,10 +128,6 @@
     window.validation.description(evt.target);
   };
 
-  var onUploadFileInputChange = function (evt) {
-    window.validation.uploadFile(evt.target);
-  };
-
   var onBackendSave = function () {
     closeImgUploadOverlay();
     window.loadMessage.create(messageTemplate.loadSuccess);
@@ -133,7 +141,7 @@
   var onFormSubmit = function (evt) {
     var data;
     evt.preventDefault();
-    if (window.validation.uploadFile(uploadFileInput) && window.validation.hashtags(textHashtagsInput) && window.validation.description(textDescriptionInput)) {
+    if (window.validation.uploadFile(uploadFileInput).resalt && window.validation.hashtags(textHashtagsInput).resalt && window.validation.description(textDescriptionInput).resalt) {
       data = new FormData(imgUploadForm);
       window.windowFocus.changeFormDisabled(imgUploadForm, true);
       window.loadMessage.create(messageTemplate.loadMessages);

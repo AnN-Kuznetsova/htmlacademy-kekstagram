@@ -8,6 +8,17 @@
 
   var photos = [];
 
+
+  var onUploadFileInputChange = function (evt) {
+    var validityResalt = window.validation.uploadFile(evt.target);
+    if (validityResalt.resalt) {
+      window.uploadedPhotoPreview(evt.target);
+      window.loadMessage.create(messageTemplate.loadMessages);
+    } else {
+      window.loadMessage.create(messageTemplate.loadError, validityResalt.message, 'Продолжить');
+    }
+  };
+
   var onBackendLoad = function (photosArray) {
     photos = photosArray;
     window.gallery = photos;
@@ -20,12 +31,8 @@
   };
 
   window.backend.load(onBackendLoad, onBackendError);
-
-  uploadFileInput.addEventListener('change', function () {
-    window.uploadForm();
-  });
+  uploadFileInput.addEventListener('change', onUploadFileInputChange);
 
 
   window.gallery = photos;
 })();
-

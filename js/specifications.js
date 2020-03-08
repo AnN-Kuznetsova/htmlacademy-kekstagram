@@ -9,6 +9,7 @@
     UPLOAD_FILE: 'uploadFileSpecification'
   };
 
+
   //  Спецификация для хеш-тегов
   var hashtagsSpecification = (function () {
     var maxCount = 5;
@@ -75,7 +76,11 @@
 
   //  Спецификация для типа загружаемого файла
   var uploadFileSpecification = (function () {
-    var uploadFilePattern = /(.png$){1}|(.jpg$){1}|(.jpeg$){1}/;
+    var FILE_TYPES = ['.png', '.jpg', '.jpeg'];
+
+    var uploadFilePattern = FILE_TYPES.map(function (currentType) {
+      return ('(' + currentType + '$){1}');
+    }).join('|');
 
     var uploadFileValiditiesErrors = {
       isPatternValid: {
@@ -86,6 +91,7 @@
 
     var specification = {
       name: ValidationSpecificationName.UPLOAD_FILE,
+      fileTypes: FILE_TYPES,
       pattern: uploadFilePattern,
       validitiesErrors: uploadFileValiditiesErrors
     };

@@ -12,6 +12,7 @@
 
   var filterEffect = window.effectSettings.filterEffectObject;
 
+
   var removeEffect = function () {
     if (filterEffect.classTitle) {
       imgUploadPreview.classList.remove(filterEffect.classTitle);
@@ -42,6 +43,7 @@
     addEffect(evt.target.value);
     window.slider.init();
   };
+
 
   window.effect = {
     set: setEffect,

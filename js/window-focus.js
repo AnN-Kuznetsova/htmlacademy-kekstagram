@@ -13,6 +13,7 @@
 
   var currentElement;
 
+
   var focusOut = function (focusElement) {
     changeFocus(FocusIndex.REMOVE);
     currentElement = focusElement ? focusElement : FocusIndex.DEFAULT_FOCUS_ELEMENT;
@@ -53,6 +54,7 @@
       elements[i].disabled = disabledValue;
     }
   };
+
 
   window.windowFocus = {
     focusOut: focusOut,

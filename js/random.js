@@ -11,6 +11,7 @@
     return array[randomNumber(array.length - 1)];
   };
 
+
   window.random = {
     number: randomNumber,
     arrayElement: getRandomArrayElement

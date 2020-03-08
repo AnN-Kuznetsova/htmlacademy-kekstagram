@@ -10,6 +10,7 @@
   var main = document.querySelector('main');
   var message;
 
+
   var createMessage = function (template, messageText, buttonText) {
     if (message) {
       removeMessage();
@@ -61,6 +62,7 @@
 
   window.loadMessage = {
     messageTemplate: messageTemplate,
-    create: createMessage
+    create: createMessage,
+    remove: removeMessage
   };
 })();
