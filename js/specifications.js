@@ -12,24 +12,24 @@
 
   //  Спецификация для хеш-тегов
   var hashtagsSpecification = (function () {
-    var maxCount = 5;
-    var hashtagsSeparator = ' ';
-    var hashtagsMinLength = 2;
-    var hashtagsMaxLength = 20;
-    var hashtagsDescription = /(^#[A-Za-zА-Яа-я0-9]+$){1}/;
+    var MAX_COUNT = 5;
+    var HASHTAGS_SEPARATOR = ' ';
+    var HASHTAGS_MIN_LENGTH = 2;
+    var HASHTAGS_MAX_LENGTH = 20;
+    var HASHTAGS_DESCRIPTION = /(^#[A-Za-zА-Яа-я0-9]+$){1}/;
 
     var hashtagsValiditiesErrors = {
       isHashtagsCount: {
         isValid: true,
-        message: 'Число хэш-тегов не должно быть больше ' + maxCount + '-ти.'
+        message: 'Число хэш-тегов не должно быть больше ' + MAX_COUNT + '-ти.'
       },
       isMinLength: {
         isValid: true,
-        message: 'Длина хэш-тега не должна быть меньше ' + hashtagsMinLength + '-х символов.'
+        message: 'Длина хэш-тега не должна быть меньше ' + HASHTAGS_MIN_LENGTH + '-х символов.'
       },
       isMaxLength: {
         isValid: true,
-        message: 'Длина хэш-тега не должна быть больше ' + hashtagsMaxLength + '-ти символов.'
+        message: 'Длина хэш-тега не должна быть больше ' + HASHTAGS_MAX_LENGTH + '-ти символов.'
       },
       isPatternValid: {
         isValid: true,
@@ -43,11 +43,11 @@
 
     var specification = {
       name: ValidationSpecificationName.HASHTAGS,
-      maxHashtagsCount: maxCount,
-      separator: hashtagsSeparator,
-      minLength: hashtagsMinLength,
-      maxLength: hashtagsMaxLength,
-      description: hashtagsDescription,
+      maxHashtagsCount: MAX_COUNT,
+      separator: HASHTAGS_SEPARATOR,
+      minLength: HASHTAGS_MIN_LENGTH,
+      maxLength: HASHTAGS_MAX_LENGTH,
+      description: HASHTAGS_DESCRIPTION,
       validitiesErrors: hashtagsValiditiesErrors
     };
     return specification;
@@ -55,20 +55,20 @@
 
   //  Спецификация для комментария (описания) для формы загрузки нового изображения
   var textDescriptionSpecification = (function () {
-    var textMinLength = textDescriptionInput.getAttribute('minlength');
-    var textMaxLength = textDescriptionInput.getAttribute('maxlength');
+    var TEXT_MIN_LENGTH = textDescriptionInput.getAttribute('minlength');
+    var TEXT_MAX_LENGTH = textDescriptionInput.getAttribute('maxlength');
 
     var textValiditiesErrors = {
       isMaxLength: {
         isValid: true,
-        message: 'Длина комментария не должна быть больше ' + textMaxLength + ' символов.'
+        message: 'Длина комментария не должна быть больше ' + TEXT_MAX_LENGTH + ' символов.'
       }
     };
 
     var specification = {
       name: ValidationSpecificationName.DESCRIPTION,
-      minLength: textMinLength,
-      maxLength: textMaxLength,
+      minLength: TEXT_MIN_LENGTH,
+      maxLength: TEXT_MAX_LENGTH,
       validitiesErrors: textValiditiesErrors
     };
     return specification;
