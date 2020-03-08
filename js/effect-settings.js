@@ -14,7 +14,7 @@
     NONE_NAME: 'none'
   };
 
-  var filters = {
+  var effectFilters = {
     'none': function (effectValue) {
       effectValue = '';
       return effectValue;
@@ -48,10 +48,11 @@
     return effectObject;
   })();
 
-  window.parameters = {
+
+  window.effectSettings = {
     scale: Scale,
     effect: Effect,
-    filters: filters,
+    effectFilters: effectFilters,
     filterEffectObject: filterEffectObject
   };
 })();

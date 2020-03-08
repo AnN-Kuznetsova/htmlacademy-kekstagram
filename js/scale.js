@@ -1,9 +1,9 @@
 'use strict';
 
 (function () {
-  var MIN_SCALE = window.parameters.scale.MIN;
-  var MAX_SCALE = window.parameters.scale.MAX;
-  var SCALE_STEP = window.parameters.scale.STEP;
+  var MIN_SCALE = window.effectSettings.scale.MIN;
+  var MAX_SCALE = window.effectSettings.scale.MAX;
+  var SCALE_STEP = window.effectSettings.scale.STEP;
 
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
   var scaleControlValue = imgUploadOverlay.querySelector('.scale__control--value');

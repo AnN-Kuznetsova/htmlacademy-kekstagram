@@ -2,6 +2,7 @@
 
 (function () {
   var photoTemplate = document.querySelector('#picture').content;
+  var pictures = document.querySelector('.pictures');
 
   var renderPreviewPhoto = function (photo) {
     var photoElement = photoTemplate.cloneNode(true);
@@ -16,7 +17,11 @@
     for (var i = 0; i < photosArray.length; i++) {
       fragment.appendChild(renderPreviewPhoto(photosArray[i]));
     }
-    return fragment;
+
+    while (pictures.querySelectorAll('.picture').length > 0) {
+      pictures.removeChild(pictures.querySelector('.picture'));
+    }
+    pictures.appendChild(fragment);
   };
 
   window.preview = renderGallery;
