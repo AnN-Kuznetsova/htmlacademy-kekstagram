@@ -10,12 +10,15 @@
 
 
   var onUploadFileInputChange = function (evt) {
-    var validityResalt = window.validation.uploadFile(evt.target);
-    if (validityResalt.resalt) {
-      window.uploadedPhotoPreview(evt.target);
-      window.loadMessage.create(messageTemplate.loadMessages);
-    } else {
-      window.loadMessage.create(messageTemplate.loadError, validityResalt.message, 'Продолжить');
+    var validityResalt;
+    if (evt.target.value) {
+      validityResalt = window.validation.uploadFile(evt.target);
+      if (validityResalt.resalt) {
+        window.uploadedPhotoPreview(evt.target);
+        window.loadMessage.create(messageTemplate.loadMessages);
+      } else {
+        window.loadMessage.create(messageTemplate.loadError, validityResalt.message, 'Продолжить');
+      }
     }
   };
 
