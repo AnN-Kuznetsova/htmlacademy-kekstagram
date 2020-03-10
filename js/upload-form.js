@@ -32,9 +32,9 @@
     scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
     scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
 
-    for (var i = 0; i < effectsRradioButtons.length; i++) {
-      effectsRradioButtons[i].addEventListener('change', onEffectsRradioButtonsChange);
-    }
+    effectsRradioButtons.forEach(function (effectsRradioButton) {
+      effectsRradioButton.addEventListener('change', onEffectsRradioButtonsChange);
+    });
 
     effectLevelPin.addEventListener('mousedown', onSliderPinMouseDown);
     effectLevelPin.addEventListener('keydown', onSliderPinKeydown);

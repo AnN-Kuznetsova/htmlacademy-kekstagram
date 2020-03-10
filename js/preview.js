@@ -18,9 +18,9 @@
   var renderGallery = function (photosArray) {
     renderPhotos = photosArray;
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < renderPhotos.length; i++) {
-      fragment.appendChild(renderPreviewPhoto(renderPhotos[i]));
-    }
+    renderPhotos.forEach(function (photo) {
+      fragment.appendChild(renderPreviewPhoto(photo));
+    });
 
     while (pictures.querySelectorAll('.picture').length > 0) {
       pictures.removeChild(pictures.querySelector('.picture'));

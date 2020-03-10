@@ -29,10 +29,13 @@
       return 'invert(' + effectValue + '%)';
     },
     'phobos': function (effectValue) {
-      return 'blur(' + (effectValue * 3 / 100) + 'px)';
+      var MAX_EFFECT_VALUE = 3;
+      return 'blur(' + (effectValue * MAX_EFFECT_VALUE / 100) + 'px)';
     },
     'heat': function (effectValue) {
-      return 'brightness(' + (effectValue * 2 / 100 + 1) + ')';
+      var MIN_EFFECT_VALUE = 1;
+      var MAX_EFFECT_VALUE = 3;
+      return 'brightness(' + (effectValue * (MAX_EFFECT_VALUE - MIN_EFFECT_VALUE) / 100 + MIN_EFFECT_VALUE) + ')';
     }
   };
 

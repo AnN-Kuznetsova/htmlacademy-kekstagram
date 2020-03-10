@@ -2,7 +2,7 @@
 
 (function () {
   var isArrayLength = function (array, maxLength) {
-    return (array.length > maxLength) ? false : true;
+    return (array.length <= maxLength);
   };
 
   var isMoreMinLength = function (str, minLength) {
