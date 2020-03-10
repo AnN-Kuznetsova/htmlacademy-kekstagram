@@ -29,12 +29,12 @@
 
   var resetEffect = function () {
     removeEffect();
-    for (var i = 0; i < effectsRadioButtons.length; i++) {
-      if (effectsRadioButtons[i].value === DEFAULT_EFFECT_NAME) {
-        effectsRadioButtons[i].checked = true;
-        addEffect(effectsRadioButtons[i].value);
+    effectsRadioButtons.forEach(function (effectsRadioButton) {
+      if (effectsRadioButton.value === DEFAULT_EFFECT_NAME) {
+        effectsRadioButton.checked = true;
+        addEffect(effectsRadioButton.value);
       }
-    }
+    });
     window.slider.init();
   };
 

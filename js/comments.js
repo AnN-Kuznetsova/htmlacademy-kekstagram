@@ -27,9 +27,9 @@
   //  Функция отрисовки всех комментариев
   var renderSocialComments = function (commentsArray) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < commentsArray.length; i++) {
-      fragment.appendChild(renderSocialComment(commentsArray[i]));
-    }
+    commentsArray.forEach(function (comment) {
+      fragment.appendChild(renderSocialComment(comment));
+    });
     bigPictureSocialComments.innerHTML = '';
     bigPictureSocialComments.appendChild(fragment);
   };

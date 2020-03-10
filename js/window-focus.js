@@ -30,9 +30,9 @@
 
   var changeFocus = function (tabindex) {
     var tabIndexChange = function (elementsArray) {
-      for (var i = 0; i < elementsArray.length; i++) {
-        elementsArray[i].tabIndex = tabindex;
-      }
+      elementsArray.forEach(function (element) {
+        element.tabIndex = tabindex;
+      });
     };
 
     var focusedElements = [
@@ -50,9 +50,9 @@
 
   var changeFormDisabled = function (form, disabledValue) {
     var elements = form.elements;
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].disabled = disabledValue;
-    }
+    Array.from(elements).forEach(function (element) {
+      element.disabled = disabledValue;
+    });
   };
 
 
