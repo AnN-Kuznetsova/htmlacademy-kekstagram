@@ -8,6 +8,15 @@
     load: 'https://js.dump.academy/kekstagram/data'
   };
 
+  var createXhr = function (onLoad, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    dataLoadHandler(xhr, onLoad, onError);
+
+    return xhr;
+  };
+
   var dataLoadHandler = function (xhr, onLoad, onError) {
     xhr.addEventListener('load', function () {
       switch (true) {
@@ -36,21 +45,13 @@
   };
 
   var save = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    dataLoadHandler(xhr, onLoad, onError);
-
+    var xhr = createXhr(onLoad, onError);
     xhr.open('POST', URL.save);
     xhr.send(data);
   };
 
   var load = function (onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    dataLoadHandler(xhr, onLoad, onError);
-
+    var xhr = createXhr(onLoad, onError);
     xhr.open('GET', URL.load);
     xhr.send();
   };
