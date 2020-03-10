@@ -20,8 +20,10 @@
     var validityMessage = '';
 
     for (var errorElement in errorsArray) {
-      if (!errorsArray[errorElement].isValid) {
-        errorsArray[errorElement].isValid = true;
+      if (errorsArray.hasOwnProperty(errorElement)) {
+        if (!errorsArray[errorElement].isValid) {
+          errorsArray[errorElement].isValid = true;
+        }
       }
     }
 
@@ -78,9 +80,11 @@
     }
 
     for (var error in errorsArray) {
-      if (!errorsArray[error].isValid) {
-        isValidity = false;
-        validityMessage += errorsArray[error].message + ' \r\n ';
+      if (errorsArray.hasOwnProperty(error)) {
+        if (!errorsArray[error].isValid) {
+          isValidity = false;
+          validityMessage += errorsArray[error].message + ' \r\n ';
+        }
       }
     }
 

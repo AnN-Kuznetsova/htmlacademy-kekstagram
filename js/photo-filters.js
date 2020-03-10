@@ -32,10 +32,12 @@
   var getFilter = function (filterName) {
     var photoFilter;
     for (var filter in photoFilters) {
-      if (filter) {
-        if (getPhotoFilterName(filter) === filterName) {
-          photoFilter = filter;
-          break;
+      if (photoFilters.hasOwnProperty(filter)) {
+        if (filter) {
+          if (getPhotoFilterName(filter) === filterName) {
+            photoFilter = filter;
+            break;
+          }
         }
       }
     }
