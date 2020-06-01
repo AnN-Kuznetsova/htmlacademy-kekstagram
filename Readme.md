@@ -3,12 +3,12 @@
 * Студент: [Анна Кузнецова](https://up.htmlacademy.ru/javascript/19/user/993327).
 * Наставник: [Владислав Кривокора](https://htmlacademy.ru/profile/krivokora).
 
------
+---
 
 _Не удаляйте и не обращайте внимание на файлы:_<br>
 _`.editorconfig`, `.eslintrc`, `.gitattributes`, `.gitignore`, `.travis.yml`, `package-lock.json`, `package.json`._
 
------
+---
 
 ### Памятка
 
