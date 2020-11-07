@@ -4,8 +4,8 @@
   var TIMEOUT = window.util.timeout;
 
   var URL = {
-    save: 'https://js.dump.academy/kekstagram',
-    load: 'https://js.dump.academy/kekstagram/data'
+    save: 'https://javascript.pages.academy/kekstagram',
+    load: 'https://javascript.pages.academy/kekstagram/data'
   };
 
   var createXhr = function (onLoad, onError) {
